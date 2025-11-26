@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}Predictions{% endblock %}
+
+{% block page_title %}Consumption Predictions{% endblock %}
+{% block page_subtitle %}AI-powered forecasts for your electricity and water usage{% endblock %}
+
+{% block page_actions %}
+<button class="btn btn-secondary" id="new-prediction">
+    <i class="fas fa-plus"></i>
+    New Prediction
+</button>
+<button class="btn btn-secondary" id="download-csv">
+    <i class="fas fa-file-csv"></i>
+    Export CSV
+</button>
+<button class="btn btn-secondary" id="download-pdf">
+    <i class="fas fa-file-pdf"></i>
+    Export PDF
+</button>
+{% endblock %}
+
+{% block content %}
+<!-- Loading Indicator -->
+<div id="predictions-loader" class="loading hidden">
+    <div class="spinner"></div>
+</div>
+
+<!-- No Predictions Message -->
+<div id="no-predictions" class="card">
+    <div class="empty-state" style="text-align: center; padding: var(--spacing-2xl);">
+        <i class="fas fa-chart-line" style="font-size: 64px; color: var(--text-muted); margin-bottom: var(--spacing-lg);"></i>
+        <h2>No Predictions Yet</h2>
+        <p class="text-muted" style="max-width: 400px; margin: var(--spacing-md) auto;">
+            Enter your consumption data to generate AI-powered predictions, or load demo predictions to see how it works.
+        </p>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: center; margin-top: var(--spacing-lg);">
+            <a href="{{ url_for('user_input') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-edit"></i>
+                Enter Data
+            </a>
+            <button class="btn btn-secondary btn-lg" id="load-demo">
+                <i class="fas fa-magic"></i>
+                Load Demo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Predictions Container -->
+<div id="predictions-container" class="hidden">
+    <!-- Resource Type Tabs -->
+    <div class="card">
+        <div class="resource-tabs" style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-md);">
+            <button class="btn active" data-resource="electricity">
+                <i class="fas fa-bolt"></i>
+                Electricity
+            </button>
+            <button class="btn btn-secondary" data-resource="water">
+                <i class="fas fa-tint"></i>
+                Water
+            </button>
+        </div>
+        
+        <!-- Period Selector -->
+        <div class="period-selector" style="display: flex; gap: var(--spacing-sm);">
+            <button class="btn btn-sm" data-periods="12">12h</button>
+            <button class="btn btn-sm active" data-periods="24">24h</button>
+            <button class="btn btn-sm" data-periods="48">48h</button>
+            <button class="btn btn-sm" data-periods="72">72h</button>
+            <button class="btn btn-sm" data-periods="168">1 week</button>
+        </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                <i class="fas fa-sigma"></i>
+            </div>
+            <div class="stat-value" id="total-predicted">--</div>
+            <div class="stat-label">Total Predicted</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="stat-value" id="average-predicted">--</div>
+            <div class="stat-label">Average per Hour</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                <i class="fas fa-arrow-down"></i>
+            </div>
+            <div class="stat-value" id="min-predicted">--</div>
+            <div class="stat-label">Minimum</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="stat-value" id="max-predicted">--</div>
+            <div class="stat-label">Maximum</div>
+        </div>
+    </div>
+    
+    <!-- Main Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Prediction Forecast</h3>
+            <div class="card-subtitle">
+                <span id="prediction-periods">-- hours</span> forecast with 95% confidence interval
+            </div>
+        </div>
+        <div class="chart-container large">
+            <canvas id="prediction-chart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Two Column Layout -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+        <!-- Cost Analysis -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Cost Analysis</h3>
+                <span class="badge badge-info" id="total-cost">$--</span>
+            </div>
+            <div id="cost-analysis">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recommendations -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recommendations</h3>
+            </div>
+            <div id="recommendations-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Predictions Table -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Detailed Predictions</h3>
+            <button class="btn btn-sm btn-secondary" onclick="Predictions.showAllPredictions()">
+                <i class="fas fa-expand"></i>
+                Show All
+            </button>
+        </div>
+        <div id="predictions-table">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Peak Analysis (for electricity) -->
+    <div class="card" id="peak-analysis-card">
+        <div class="card-header">
+            <h3 class="card-title">Peak Hour Analysis</h3>
+        </div>
+        <div id="peak-analysis">
+            <div class="peak-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md);">
+                <div class="peak-item">
+                    <div class="peak-label">Peak Hours</div>
+                    <div class="peak-value">5:00 PM - 10:00 PM</div>
+                    <div class="peak-consumption">-- kWh</div>
+                </div>
+                <div class="peak-item">
+                    <div class="peak-label">Off-Peak Hours</div>
+                    <div class="peak-value">12:00 AM - 7:00 AM</div>
+                    <div class="peak-consumption">-- kWh</div>
+                </div>
+                <div class="peak-item">
+                    <div class="peak-label">Peak Percentage</div>
+                    <div class="peak-value" id="peak-percentage">--%</div>
+                    <div class="peak-consumption">of total usage</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .resource-tabs .btn.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .resource-tabs .btn[data-resource="electricity"].active {
+        background: var(--electricity-color);
+    }
+    
+    .resource-tabs .btn[data-resource="water"].active {
+        background: var(--water-color);
+    }
+    
+    .period-selector .btn.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .cost-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .cost-item {
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        text-align: center;
+    }
+    
+    .cost-item.highlight {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.1));
+        border: 1px solid var(--primary-color);
+    }
+    
+    .cost-label {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .cost-value {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+    
+    .recommendation-card {
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--spacing-sm);
+        border-left: 4px solid var(--border-color);
+    }
+    
+    .recommendation-card.high {
+        border-left-color: var(--warning-color);
+    }
+    
+    .recommendation-card.critical {
+        border-left-color: var(--error-color);
+    }
+    
+    .recommendation-card.medium {
+        border-left-color: var(--info-color);
+    }
+    
+    .recommendation-card.low {
+        border-left-color: var(--success-color);
+    }
+    
+    .recommendation-header {
+        display: flex;
+        gap: var(--spacing-sm);
+        align-items: center;
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .recommendation-type {
+        font-size: var(--text-xs);
+        color: var(--text-muted);
+        text-transform: uppercase;
+    }
+    
+    .recommendation-message {
+        margin: 0 0 var(--spacing-sm);
+        font-size: var(--text-sm);
+    }
+    
+    .recommendation-savings {
+        margin: 0;
+        font-size: var(--text-xs);
+        color: var(--success-color);
+    }
+    
+    .peak-item {
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        text-align: center;
+    }
+    
+    .peak-label {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .peak-value {
+        font-size: var(--text-lg);
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .peak-consumption {
+        font-size: var(--text-sm);
+        color: var(--text-muted);
+        margin-top: var(--spacing-xs);
+    }
+    
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .cost-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        [style*="grid-template-columns: 1fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/predictions.js') }}"></script>
+{% endblock %}

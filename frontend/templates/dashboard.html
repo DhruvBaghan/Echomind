@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Overview of your resource consumption and predictions{% endblock %}
+
+{% block page_actions %}
+<button class="btn btn-secondary" id="refresh-dashboard">
+    <i class="fas fa-sync-alt"></i>
+    Refresh
+</button>
+<div class="period-selector">
+    <button class="btn btn-sm btn-secondary active" data-period="today">Today</button>
+    <button class="btn btn-sm btn-secondary" data-period="week">Week</button>
+    <button class="btn btn-sm btn-secondary" data-period="month">Month</button>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Loading Indicator -->
+<div id="dashboard-loader" class="loading hidden">
+    <div class="spinner"></div>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+    <!-- Electricity Card -->
+    <div class="stat-card electricity">
+        <div class="stat-icon electricity">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <div class="stat-value" id="electricity-consumption">-- kWh</div>
+        <div class="stat-label">Electricity Usage</div>
+        <div class="stat-change positive" id="electricity-trend">
+            <i class="fas fa-arrow-down"></i>
+            <span>--</span>
+        </div>
+    </div>
+    
+    <!-- Water Card -->
+    <div class="stat-card water">
+        <div class="stat-icon water">
+            <i class="fas fa-tint"></i>
+        </div>
+        <div class="stat-value" id="water-consumption">-- L</div>
+        <div class="stat-label">Water Usage</div>
+        <div class="stat-change positive" id="water-trend">
+            <i class="fas fa-arrow-down"></i>
+            <span>--</span>
+        </div>
+    </div>
+    
+    <!-- Electricity Prediction -->
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-value" id="electricity-predicted">-- kWh</div>
+        <div class="stat-label">Predicted (Next 24h)</div>
+        <div class="stat-change">
+            <span>Est. Cost: <strong id="electricity-cost">$--</strong></span>
+        </div>
+    </div>
+    
+    <!-- Water Prediction -->
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #cffafe; color: #0891b2;">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-value" id="water-predicted">-- L</div>
+        <div class="stat-label">Predicted (Next 24h)</div>
+        <div class="stat-change">
+            <span>Est. Cost: <strong id="water-cost">$--</strong></span>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="charts-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg);">
+    <!-- Main Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Consumption Overview</h3>
+            <div class="card-actions">
+                <button class="btn btn-sm btn-secondary" data-chart="electricity">Electricity</button>
+                <button class="btn btn-sm btn-secondary" data-chart="water">Water</button>
+                <button class="btn btn-sm btn-primary" data-chart="both">Both</button>
+            </div>
+        </div>
+        <div class="chart-container large">
+            <canvas id="consumption-chart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Sustainability Score -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Sustainability Score</h3>
+        </div>
+        <div class="sustainability-score">
+            <div class="score-circle" style="--score: 75;">
+                <span class="score-value" id="sustainability-score">75</span>
+                <span class="score-grade" id="sustainability-grade">B</span>
+            </div>
+            <div class="score-details mt-lg">
+                <h4>Improvement Tips</h4>
+                <ul id="improvement-tips">
+                    <li>Loading tips...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Second Row -->
+<div class="charts-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+    <!-- Comparison Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Weekly Comparison</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="comparison-chart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Alerts -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Alerts & Notifications</h3>
+        </div>
+        <div id="alerts-container">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tips Section -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Daily Saving Tips</h3>
+        <a href="#" class="btn btn-sm btn-secondary">View All</a>
+    </div>
+    <div id="tips-container" class="tips-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-md);">
+        <!-- Tips will be loaded here -->
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Quick Actions</h3>
+    </div>
+    <div class="quick-actions" style="display: flex; gap: var(--spacing-md); flex-wrap: wrap;">
+        <a href="{{ url_for('user_input') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Enter Usage Data
+        </a>
+        <a href="{{ url_for('predictions') }}" class="btn btn-secondary">
+            <i class="fas fa-chart-line"></i>
+            View Predictions
+        </a>
+        <button class="btn btn-secondary" onclick="Dashboard.loadDemoData()">
+            <i class="fas fa-database"></i>
+            Load Demo Data
+        </button>
+        <button class="btn btn-secondary" onclick="exportData()">
+            <i class="fas fa-download"></i>
+            Export Report
+        </button>
+    </div>
+</div>
+
+<style>
+    .charts-row {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .tips-grid .tip-card {
+        display: flex;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+    }
+    
+    .tip-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .tip-icon.electricity {
+        background: var(--electricity-light);
+        color: var(--electricity-dark);
+    }
+    
+    .tip-icon.water {
+        background: var(--water-light);
+        color: var(--water-dark);
+    }
+    
+    .tip-icon.general {
+        background: rgba(139, 92, 246, 0.1);
+        color: #8b5cf6;
+    }
+    
+    .tip-content p {
+        margin: 0 0 var(--spacing-xs);
+        font-size: var(--text-sm);
+    }
+    
+    .tip-impact {
+        font-size: var(--text-xs);
+        color: var(--success-color);
+        font-weight: 500;
+    }
+    
+    .score-details h4 {
+        font-size: var(--text-sm);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .score-details ul {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        padding-left: var(--spacing-lg);
+    }
+    
+    .score-details li {
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    @media (max-width: 1024px) {
+        .charts-row {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+    // Export data function
+    function exportData() {
+        alert('Export functionality coming soon!');
+    }
+    
+    // Load demo data
+    Dashboard.loadDemoData = async function() {
+        try {
+            Dashboard.showLoading();
+            const result = await API.predictions.demo('both', 24);
+            console.log('Demo data loaded:', result);
+            Dashboard.showSuccess('Demo data loaded successfully');
+            await Dashboard.loadDashboard();
+        } catch (error) {
+            Dashboard.showError('Failed to load demo data');
+        }
+    };
+    
+    // Show success message
+    Dashboard.showSuccess = function(message) {
+        const container = document.getElementById('message-container');
+        if (container) {
+            container.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                </div>`;
+            container.classList.remove('hidden');
+            setTimeout(() => container.classList.add('hidden'), 3000);
+        }
+    };
+</script>
+{% endblock %}

@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block title %}Enter Usage Data{% endblock %}
+
+{% block page_title %}Enter Usage Data{% endblock %}
+{% block page_subtitle %}Input your electricity and water consumption data for predictions{% endblock %}
+
+{% block page_actions %}
+<button class="btn btn-secondary" id="clear-data">
+    <i class="fas fa-trash"></i>
+    Clear All
+</button>
+<button class="btn btn-primary" id="submit-data">
+    <i class="fas fa-magic"></i>
+    Get Predictions
+    <span id="submit-loader" class="spinner hidden" style="width: 16px; height: 16px; margin-left: 8px;"></span>
+</button>
+{% endblock %}
+
+{% block content %}
+<!-- Resource Type Tabs -->
+<div class="card">
+    <div class="resource-tabs" style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg);">
+        <button class="btn btn-lg active" data-resource="electricity">
+            <i class="fas fa-bolt"></i>
+            Electricity
+        </button>
+        <button class="btn btn-lg btn-secondary" data-resource="water">
+            <i class="fas fa-tint"></i>
+            Water
+        </button>
+    </div>
+    
+    <!-- Input Mode Toggle -->
+    <div class="input-mode-toggle" style="display: flex; gap: var(--spacing-sm); margin-bottom: var(--spacing-lg);">
+        <button class="btn btn-sm active" data-input-mode="manual">
+            <i class="fas fa-keyboard"></i>
+            Manual Entry
+        </button>
+        <button class="btn btn-sm btn-secondary" data-input-mode="csv">
+            <i class="fas fa-file-csv"></i>
+            CSV Upload
+        </button>
+    </div>
+    
+    <!-- Manual Input Section -->
+    <div id="manual-input">
+        <div class="input-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md);">
+            <div class="form-group">
+                <label class="form-label">Date & Time</label>
+                <input type="datetime-local" class="form-input" id="entry-datetime">
+                <span class="form-helper">When was this consumption recorded?</span>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    Consumption (<span id="unit-label">kWh</span>)
+                </label>
+                <input type="number" class="form-input" id="entry-value" 
+                       placeholder="Enter value" step="0.01" min="0">
+                <span class="form-helper" id="unit-hint">Enter consumption in kilowatt-hours</span>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Notes (Optional)</label>
+                <input type="text" class="form-input" id="entry-notes" 
+                       placeholder="e.g., High usage day">
+            </div>
+            
+            <div class="form-group" style="display: flex; align-items: flex-end;">
+                <button class="btn btn-primary btn-lg" id="add-entry" style="width: 100%;">
+                    <i class="fas fa-plus"></i>
+                    Add Entry
+                </button>
+            </div>
+        </div>
+        
+        <!-- Quick Add Presets -->
+        <div class="quick-presets" style="margin-top: var(--spacing-lg); padding-top: var(--spacing-lg); border-top: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: var(--spacing-md);">Quick Add Sample Data</h4>
+            <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap;">
+                <button class="btn btn-sm btn-secondary" data-preset="sample-day">
+                    <i class="fas fa-calendar-day"></i>
+                    1 Day Sample
+                </button>
+                <button class="btn btn-sm btn-secondary" data-preset="sample-week">
+                    <i class="fas fa-calendar-week"></i>
+                    1 Week Sample
+                </button>
+                <button class="btn btn-sm btn-secondary" data-preset="sample-month">
+                    <i class="fas fa-calendar-alt"></i>
+                    1 Month Sample
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CSV Upload Section -->
+    <div id="csv-input" class="hidden">
+        <div class="csv-upload-area" style="border: 2px dashed var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-xl); text-align: center;">
+            <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: var(--text-muted); margin-bottom: var(--spacing-md);"></i>
+            <h3>Upload CSV File</h3>
+            <p class="text-muted">Drag and drop or click to select a file</p>
+            <input type="file" id="csv-file" accept=".csv" style="display: none;">
+            <button class="btn btn-primary mt-md" onclick="document.getElementById('csv-file').click();">
+                <i class="fas fa-file-upload"></i>
+                Select File
+            </button>
+            
+            <div class="csv-format-help mt-lg" style="text-align: left; background: var(--background-color); padding: var(--spacing-md); border-radius: var(--radius-md);">
+                <h4 style="margin-bottom: var(--spacing-sm);">CSV Format</h4>
+                <p class="text-muted" style="font-size: var(--text-sm);">Your CSV file should have the following columns:</p>
+                <code style="display: block; background: var(--surface-color); padding: var(--spacing-sm); margin-top: var(--spacing-sm); border-radius: var(--radius-sm);">
+                    datetime,consumption,notes<br>
+                    2024-01-01T00:00:00,1.5,Optional note<br>
+                    2024-01-01T01:00:00,1.2,
+                </code>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Entries Table -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Your Entries</h3>
+        <span class="badge badge-info" id="entry-count">0 entries</span>
+    </div>
+    <div id="entries-table">
+        <div class="empty-state" style="text-align: center; padding: var(--spacing-xl); color: var(--text-muted);">
+            <i class="fas fa-database" style="font-size: 48px; margin-bottom: var(--spacing-md);"></i>
+            <p>No entries yet. Add your consumption data above.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Prediction Settings -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Prediction Settings</h3>
+    </div>
+    <div class="settings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md);">
+        <div class="form-group">
+            <label class="form-label">Prediction Periods</label>
+            <select class="form-select" id="prediction-periods">
+                <option value="12">12 hours</option>
+                <option value="24" selected>24 hours (1 day)</option>
+                <option value="48">48 hours (2 days)</option>
+                <option value="72">72 hours (3 days)</option>
+                <option value="168">168 hours (1 week)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Frequency</label>
+            <select class="form-select" id="prediction-frequency">
+                <option value="H" selected>Hourly</option>
+                <option value="D">Daily</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Include Confidence Interval</label>
+            <select class="form-select" id="include-confidence">
+                <option value="true" selected>Yes (95%)</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Tips -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Tips for Better Predictions</h3>
+    </div>
+    <div class="tips-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-md);">
+        <div class="tip-item" style="display: flex; gap: var(--spacing-sm); align-items: flex-start;">
+            <i class="fas fa-check-circle text-success"></i>
+            <p style="margin: 0; font-size: var(--text-sm);">Add at least 24 hours of data for basic predictions</p>
+        </div>
+        <div class="tip-item" style="display: flex; gap: var(--spacing-sm); align-items: flex-start;">
+            <i class="fas fa-check-circle text-success"></i>
+            <p style="margin: 0; font-size: var(--text-sm);">More data (1 week+) provides better accuracy</p>
+        </div>
+        <div class="tip-item" style="display: flex; gap: var(--spacing-sm); align-items: flex-start;">
+            <i class="fas fa-check-circle text-success"></i>
+            <p style="margin: 0; font-size: var(--text-sm);">Include typical weekday and weekend patterns</p>
+        </div>
+        <div class="tip-item" style="display: flex; gap: var(--spacing-sm); align-items: flex-start;">
+            <i class="fas fa-check-circle text-success"></i>
+            <p style="margin: 0; font-size: var(--text-sm);">Ensure data covers different times of day</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .resource-tabs .btn.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .resource-tabs .btn[data-resource="electricity"].active {
+        background: var(--electricity-color);
+    }
+    
+    .resource-tabs .btn[data-resource="water"].active {
+        background: var(--water-color);
+    }
+    
+    .input-mode-toggle .btn.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .entries-summary {
+        display: flex;
+        gap: var(--spacing-lg);
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        margin-top: var(--spacing-md);
+    }
+    
+    .entries-summary p {
+        margin: 0;
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+    }
+    
+    .csv-upload-area {
+        transition: all var(--transition-fast);
+    }
+    
+    .csv-upload-area:hover {
+        border-color: var(--primary-color);
+        background: rgba(37, 99, 235, 0.02);
+    }
+    
+    .csv-upload-area.dragover {
+        border-color: var(--primary-color);
+        background: rgba(37, 99, 235, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/user_input.js') }}"></script>
+<script>
+    // Drag and drop for CSV
+    const csvArea = document.querySelector('.csv-upload-area');
+    if (csvArea) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            csvArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            csvArea.addEventListener(eventName, () => csvArea.classList.add('dragover'), false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            csvArea.addEventListener(eventName, () => csvArea.classList.remove('dragover'), false);
+        });
+        
+        csvArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('csv-file').files = files;
+                document.getElementById('csv-file').dispatchEvent(new Event('change'));
+            }
+        }, false);
+    }
+    
+    // Update entry count
+    const originalRenderEntries = UserInput.renderEntries;
+    UserInput.renderEntries = function() {
+        originalRenderEntries.call(this);
+        const count = this.formData[this.currentResource].length;
+        const countBadge = document.getElementById('entry-count');
+        if (countBadge) {
+            countBadge.textContent = `${count} entries`;
+        }
+    };
+</script>
+{% endblock %}

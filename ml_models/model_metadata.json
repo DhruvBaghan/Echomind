@@ -1,0 +1,96 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2024-01-15T10:30:00.000000",
+  "description": "Pre-trained models for EchoMind resource consumption prediction",
+  "electricity": {
+    "model_file": "electricity_model.pkl",
+    "metrics": {
+      "mae": 4.2783,
+      "mse": 29.0832,
+      "rmse": 5.3929,
+      "r2": 0.5402,
+      "mape": 6.4,
+      "accuracy_percentage": 93.6,
+      "training_time_seconds": 0.152874,
+      "training_samples": 519,
+      "test_samples": 130
+    },
+    "training_info": {
+      "trained_at": "2025-11-26T17:21:38.564009",
+      "training_samples": 519,
+      "test_samples": 130,
+      "data_date_range": {
+        "start": "2024-01-01T09:00:00",
+        "end": "2024-03-29T18:00:00"
+      }
+    },
+    "model_type": "Prophet",
+    "confidence_interval": 0.95,
+    "updated_at": "2025-11-26T17:21:38.571516"
+  },
+  "water": {
+    "model_file": "water_model.pkl",
+    "metrics": {
+      "mae": 28.4372,
+      "mse": 1198.2384,
+      "rmse": 34.6156,
+      "r2": -5.3464,
+      "mape": 18.32,
+      "accuracy_percentage": 81.68,
+      "training_time_seconds": 0.140782,
+      "training_samples": 517,
+      "test_samples": 130
+    },
+    "training_info": {
+      "trained_at": "2025-11-26T17:21:38.829795",
+      "training_samples": 517,
+      "test_samples": 130,
+      "data_date_range": {
+        "start": "2024-01-01T09:00:00",
+        "end": "2024-03-29T18:00:00"
+      }
+    },
+    "model_type": "Prophet",
+    "confidence_interval": 0.95,
+    "updated_at": "2025-11-26T17:21:38.845215"
+  },
+  "benchmarks": {
+    "electricity": {
+      "daily_household_kwh": 30.0,
+      "per_person_daily_kwh": 7.5,
+      "excellent_threshold": 20.0,
+      "good_threshold": 30.0,
+      "average_threshold": 40.0
+    },
+    "water": {
+      "daily_household_liters": 350.0,
+      "per_person_daily_liters": 87.5,
+      "excellent_threshold": 280.0,
+      "good_threshold": 400.0,
+      "average_threshold": 500.0
+    }
+  },
+  "cost_defaults": {
+    "electricity_per_kwh_usd": 0.12,
+    "water_per_liter_usd": 0.002,
+    "currency": "USD"
+  },
+  "prediction_settings": {
+    "default_periods": 24,
+    "max_periods": 168,
+    "supported_frequencies": [
+      "H",
+      "D",
+      "W",
+      "M"
+    ],
+    "default_frequency": "H"
+  },
+  "notes": [
+    "Models trained on synthetic data representing typical household patterns",
+    "Electricity patterns include HVAC seasonal variations",
+    "Water patterns include morning/evening peaks and weekly laundry cycles",
+    "Retrain models periodically for best accuracy",
+    "For production, train on actual historical data"
+  ]
+}

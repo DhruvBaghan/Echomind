@@ -1,0 +1,92 @@
+# ============================================
+# EchoMind - Git Ignore
+# ============================================
+
+# ----- Python -----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ----- Virtual Environment -----
+venv/
+ENV/
+env/
+.venv/
+
+# ----- Environment Variables -----
+.env
+.env.local
+.env.production
+
+# ----- IDE -----
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# ----- Database -----
+*.db
+*.sqlite3
+*.sql.backup
+
+# ----- Logs -----
+logs/
+*.log
+
+# ----- ML Models (large files) -----
+# Uncomment if you don't want to track models in git
+# ml_models/*.pkl
+# ml_models/*.joblib
+
+# ----- Datasets (large files) -----
+# Keep structure but ignore large data files
+datasets/raw/*.csv
+datasets/processed/*.csv
+!datasets/raw/.gitkeep
+!datasets/processed/.gitkeep
+
+# ----- OS Files -----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----- Docker -----
+*.log
+docker-compose.override.yml
+
+# ----- Testing -----
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+.cache/
+
+# ----- Jupyter Notebooks -----
+.ipynb_checkpoints/
+*.ipynb
+
+# ----- Misc -----
+*.bak
+*.tmp
+*.temp

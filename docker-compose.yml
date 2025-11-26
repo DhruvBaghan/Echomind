@@ -1,0 +1,103 @@
+# ============================================
+# EchoMind - Docker Compose Configuration
+# ============================================
+
+version: '3.8'
+
+services:
+  # ----- Main Application -----
+  echomind-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: echomind-app
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://echomind:echomind_password@echomind-db:5432/echomind
+      - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
+      - ELECTRICITY_COST_PER_KWH=${ELECTRICITY_COST_PER_KWH:-0.12}
+      - WATER_COST_PER_LITER=${WATER_COST_PER_LITER:-0.002}
+    volumes:
+      - ./ml_models:/app/ml_models:ro
+      - ./logs:/app/logs
+    depends_on:
+      echomind-db:
+        condition: service_healthy
+    networks:
+      - echomind-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ----- PostgreSQL Database -----
+  echomind-db:
+    image: postgres:15-alpine
+    container_name: echomind-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=echomind
+      - POSTGRES_PASSWORD=echomind_password
+      - POSTGRES_DB=echomind
+    volumes:
+      - echomind-db-data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - echomind-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U echomind -d echomind"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----- Nginx Reverse Proxy -----
+  echomind-nginx:
+    image: nginx:alpine
+    container_name: echomind-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend/static:/usr/share/nginx/html/static:ro
+    depends_on:
+      - echomind-app
+    networks:
+      - echomind-network
+
+  # ----- Redis Cache (Optional) -----
+  echomind-redis:
+    image: redis:7-alpine
+    container_name: echomind-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - echomind-redis-data:/data
+    networks:
+      - echomind-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+# ----- Networks -----
+networks:
+  echomind-network:
+    driver: bridge
+
+# ----- Volumes -----
+volumes:
+  echomind-db-data:
+    driver: local
+  echomind-redis-data:
+    driver: local

@@ -1,0 +1,521 @@
+{% extends "base.html" %}
+
+{% block title %}Electricity{% endblock %}
+
+{% block page_title %}Electricity Consumption{% endblock %}
+{% block page_subtitle %}Monitor and analyze your electricity usage{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('user_input') }}" class="btn btn-primary">
+    <i class="fas fa-plus"></i>
+    Add Data
+</a>
+<button class="btn btn-secondary" id="get-predictions">
+    <i class="fas fa-chart-line"></i>
+    Get Predictions
+</button>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card electricity">
+        <div class="stat-icon electricity">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <div class="stat-value" id="today-usage">-- kWh</div>
+        <div class="stat-label">Today's Usage</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-down"></i>
+            <span>5% vs yesterday</span>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+            <i class="fas fa-calendar-week"></i>
+        </div>
+        <div class="stat-value" id="week-usage">-- kWh</div>
+        <div class="stat-label">This Week</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stat-value" id="month-cost">$--</div>
+        <div class="stat-label">Estimated Monthly Cost</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+            <i class="fas fa-leaf"></i>
+        </div>
+        <div class="stat-value" id="carbon-footprint">-- kg</div>
+        <div class="stat-label">Carbon Footprint</div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg);">
+    <!-- Usage Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Electricity Usage</h3>
+            <div class="chart-controls">
+                <button class="btn btn-sm active" data-view="hourly">Hourly</button>
+                <button class="btn btn-sm btn-secondary" data-view="daily">Daily</button>
+                <button class="btn btn-sm btn-secondary" data-view="weekly">Weekly</button>
+            </div>
+        </div>
+        <div class="chart-container large">
+            <canvas id="electricity-chart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Peak Hours -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Peak Hours</h3>
+        </div>
+        <div class="peak-hours-info">
+            <div class="peak-period peak">
+                <div class="period-icon">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="period-details">
+                    <h4>Peak Hours</h4>
+                    <p class="time">5:00 PM - 10:00 PM</p>
+                    <p class="rate">Rate: 1.5x</p>
+                </div>
+            </div>
+            
+            <div class="peak-period off-peak">
+                <div class="period-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="period-details">
+                    <h4>Off-Peak Hours</h4>
+                    <p class="time">12:00 AM - 7:00 AM</p>
+                    <p class="rate">Rate: 0.7x</p>
+                </div>
+            </div>
+            
+            <div class="peak-period standard">
+                <div class="period-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="period-details">
+                    <h4>Standard Hours</h4>
+                    <p class="time">7:00 AM - 5:00 PM</p>
+                    <p class="rate">Rate: 1.0x</p>
+                </div>
+            </div>
+        </div>
+        <div class="peak-recommendation mt-md">
+            <p class="text-muted" style="font-size: var(--text-sm);">
+                <i class="fas fa-lightbulb text-warning"></i>
+                Shift high-power activities to off-peak hours to save up to 30% on your electricity bill.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Appliance Breakdown -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Estimated Appliance Usage</h3>
+        <button class="btn btn-sm btn-secondary" onclick="refreshAppliances()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+        </button>
+    </div>
+    <div class="appliance-grid" id="appliance-breakdown">
+        <div class="appliance-item">
+            <div class="appliance-icon" style="background: #fee2e2; color: #ef4444;">
+                <i class="fas fa-snowflake"></i>
+            </div>
+            <div class="appliance-details">
+                <h4>Heating/Cooling</h4>
+                <div class="appliance-usage">-- kWh</div>
+                <div class="appliance-percent">40% of total</div>
+            </div>
+            <div class="appliance-bar" style="--percent: 40%;"></div>
+        </div>
+        
+        <div class="appliance-item">
+            <div class="appliance-icon" style="background: #dbeafe; color: #2563eb;">
+                <i class="fas fa-hot-tub"></i>
+            </div>
+            <div class="appliance-details">
+                <h4>Water Heater</h4>
+                <div class="appliance-usage">-- kWh</div>
+                <div class="appliance-percent">15% of total</div>
+            </div>
+            <div class="appliance-bar" style="--percent: 15%;"></div>
+        </div>
+        
+        <div class="appliance-item">
+            <div class="appliance-icon" style="background: #fef3c7; color: #f59e0b;">
+                <i class="fas fa-blender"></i>
+            </div>
+            <div class="appliance-details">
+                <h4>Appliances</h4>
+                <div class="appliance-usage">-- kWh</div>
+                <div class="appliance-percent">13% of total</div>
+            </div>
+            <div class="appliance-bar" style="--percent: 13%;"></div>
+        </div>
+        
+        <div class="appliance-item">
+            <div class="appliance-icon" style="background: #d1fae5; color: #10b981;">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="appliance-details">
+                <h4>Lighting</h4>
+                <div class="appliance-usage">-- kWh</div>
+                <div class="appliance-percent">10% of total</div>
+            </div>
+            <div class="appliance-bar" style="--percent: 10%;"></div>
+        </div>
+        
+        <div class="appliance-item">
+            <div class="appliance-icon" style="background: #e0e7ff; color: #6366f1;">
+                <i class="fas fa-tv"></i>
+            </div>
+            <div class="appliance-details">
+                <h4>Electronics</h4>
+                <div class="appliance-usage">-- kWh</div>
+                <div class="appliance-percent">8% of total</div>
+            </div>
+            <div class="appliance-bar" style="--percent: 8%;"></div>
+        </div>
+        
+        <div class="appliance-item">
+            <div class="appliance-icon" style="background: #cffafe; color: #06b6d4;">
+                <i class="fas fa-ice-cream"></i>
+            </div>
+            <div class="appliance-details">
+                <h4>Refrigerator</h4>
+                <div class="appliance-usage">-- kWh</div>
+                <div class="appliance-percent">6% of total</div>
+            </div>
+            <div class="appliance-bar" style="--percent: 6%;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommendations -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Energy Saving Tips</h3>
+    </div>
+    <div id="electricity-tips" class="tips-grid">
+        <!-- Tips will be loaded here -->
+    </div>
+</div>
+
+<!-- Cost Calculator -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Cost Calculator</h3>
+    </div>
+    <div class="calculator-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md);">
+        <div class="form-group">
+            <label class="form-label">Consumption (kWh)</label>
+            <input type="number" class="form-input" id="calc-consumption" value="500" min="0">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Rate ($/kWh)</label>
+            <input type="number" class="form-input" id="calc-rate" value="0.12" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Period</label>
+            <select class="form-select" id="calc-period">
+                <option value="day">Daily</option>
+                <option value="week">Weekly</option>
+                <option value="month" selected>Monthly</option>
+                <option value="year">Yearly</option>
+            </select>
+        </div>
+        <div class="form-group" style="display: flex; align-items: flex-end;">
+            <button class="btn btn-primary" style="width: 100%;" onclick="calculateCost()">
+                Calculate
+            </button>
+        </div>
+    </div>
+    <div id="calc-result" class="mt-lg" style="display: none;">
+        <div class="result-card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05)); padding: var(--spacing-lg); border-radius: var(--radius-lg); text-align: center;">
+            <div style="font-size: var(--text-sm); color: var(--text-secondary);">Estimated Cost</div>
+            <div style="font-size: var(--text-4xl); font-weight: 700; color: var(--electricity-color);" id="calc-cost">$0.00</div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .peak-hours-info {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .peak-period {
+        display: flex;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        align-items: center;
+    }
+    
+    .peak-period.peak {
+        border-left: 4px solid var(--error-color);
+    }
+    
+    .peak-period.off-peak {
+        border-left: 4px solid var(--success-color);
+    }
+    
+    .peak-period.standard {
+        border-left: 4px solid var(--info-color);
+    }
+    
+    .period-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface-color);
+        color: var(--text-secondary);
+    }
+    
+    .period-details h4 {
+        margin: 0;
+        font-size: var(--text-sm);
+    }
+    
+    .period-details .time {
+        margin: 0;
+        font-size: var(--text-xs);
+        color: var(--text-secondary);
+    }
+    
+    .period-details .rate {
+        margin: 0;
+        font-size: var(--text-xs);
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+    
+    .appliance-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .appliance-item {
+        display: flex;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .appliance-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .appliance-details h4 {
+        margin: 0;
+        font-size: var(--text-sm);
+    }
+    
+    .appliance-usage {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .appliance-percent {
+        font-size: var(--text-xs);
+        color: var(--text-muted);
+    }
+    
+    .appliance-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        width: var(--percent);
+        background: var(--electricity-color);
+    }
+    
+    .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    @media (max-width: 1024px) {
+        [style*="grid-template-columns: 2fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async function() {
+        await loadElectricityData();
+        await loadElectricityTips();
+        initChart();
+    });
+    
+    // Load electricity data
+    async function loadElectricityData() {
+        try {
+            const stats = await API.dashboard.stats('month', 'electricity');
+            // Update UI with stats
+            console.log('Electricity stats:', stats);
+        } catch (error) {
+            console.error('Error loading electricity data:', error);
+        }
+    }
+    
+    // Load tips
+    async function loadElectricityTips() {
+        try {
+            const result = await API.electricity.recommendations();
+            const container = document.getElementById('electricity-tips');
+            
+            if (result.success && result.recommendations) {
+                container.innerHTML = result.recommendations.slice(0, 6).map(tip => `
+                    <div class="tip-card">
+                        <div class="tip-icon electricity">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>${tip.title}</h4>
+                            <p>${tip.description}</p>
+                            <span class="tip-savings">${tip.potential_savings}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Error loading tips:', error);
+        }
+    }
+    
+    // Initialize chart
+    function initChart() {
+        const ctx = document.getElementById('electricity-chart');
+        if (!ctx) return;
+        
+        // Generate sample data
+        const labels = [];
+        const data = [];
+        const now = new Date();
+        
+        for (let i = 23; i >= 0; i--) {
+            const hour = new Date(now - i * 3600000);
+            labels.push(hour.getHours() + ':00');
+            
+            // Simulate usage pattern
+            const h = hour.getHours();
+            let base = 1.5;
+            if (h >= 6 && h <= 9) base = 2.5;
+            else if (h >= 17 && h <= 21) base = 3;
+            else if (h >= 0 && h <= 5) base = 0.8;
+            
+            data.push(base + Math.random() * 0.5);
+        }
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Consumption (kWh)',
+                    data: data,
+                    backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                    borderColor: '#f59e0b',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kWh'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Calculate cost
+    function calculateCost() {
+        const consumption = parseFloat(document.getElementById('calc-consumption').value) || 0;
+        const rate = parseFloat(document.getElementById('calc-rate').value) || 0;
+        const period = document.getElementById('calc-period').value;
+        
+        let cost = consumption * rate;
+        
+        // Adjust for period display
+        const periodLabels = {
+            day: cost,
+            week: cost,
+            month: cost,
+            year: cost
+        };
+        
+        document.getElementById('calc-cost').textContent = `$${cost.toFixed(2)}`;
+        document.getElementById('calc-result').style.display = 'block';
+    }
+    
+    // Refresh appliances
+    function refreshAppliances() {
+        // Simulate refresh
+        const items = document.querySelectorAll('.appliance-usage');
+        items.forEach(item => {
+            const value = (Math.random() * 50 + 10).toFixed(1);
+            item.textContent = `${value} kWh`;
+        });
+    }
+    
+    // Get predictions
+    document.getElementById('get-predictions')?.addEventListener('click', async function() {
+        try {
+            const result = await API.predictions.demo('electricity', 24);
+            sessionStorage.setItem('predictionResult', JSON.stringify(result.electricity || result));
+            sessionStorage.setItem('predictionResource', 'electricity');
+            window.location.href = '/predictions';
+        } catch (error) {
+            console.error('Error getting predictions:', error);
+        }
+    });
+</script>
+{% endblock %}

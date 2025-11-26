@@ -1,0 +1,640 @@
+{% extends "base.html" %}
+
+{% block title %}Water{% endblock %}
+
+{% block page_title %}Water Consumption{% endblock %}
+{% block page_subtitle %}Monitor and analyze your water usage{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('user_input') }}" class="btn btn-primary">
+    <i class="fas fa-plus"></i>
+    Add Data
+</a>
+<button class="btn btn-secondary" id="get-predictions">
+    <i class="fas fa-chart-line"></i>
+    Get Predictions
+</button>
+<button class="btn btn-secondary" id="check-leaks">
+    <i class="fas fa-search"></i>
+    Check for Leaks
+</button>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Overview -->
+<div class="stats-grid">
+    <div class="stat-card water">
+        <div class="stat-icon water">
+            <i class="fas fa-tint"></i>
+        </div>
+        <div class="stat-value" id="today-usage">-- L</div>
+        <div class="stat-label">Today's Usage</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-down"></i>
+            <span>8% vs yesterday</span>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4;">
+            <i class="fas fa-calendar-week"></i>
+        </div>
+        <div class="stat-value" id="week-usage">-- L</div>
+        <div class="stat-label">This Week</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stat-value" id="month-cost">$--</div>
+        <div class="stat-label">Estimated Monthly Cost</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="stat-value" id="leak-status">No Leaks</div>
+        <div class="stat-label">Leak Detection</div>
+    </div>
+</div>
+
+<!-- Leak Detection Alert (hidden by default) -->
+<div class="card" id="leak-alert" style="display: none; border-left: 4px solid var(--error-color);">
+    <div class="alert alert-error" style="margin: 0;">
+        <i class="fas fa-exclamation-circle"></i>
+        <div>
+            <strong>Potential Water Leak Detected!</strong>
+            <p style="margin: var(--spacing-sm) 0 0;">Unusual water usage detected during night hours. Please check your plumbing.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg);">
+    <!-- Usage Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Water Usage</h3>
+            <div class="chart-controls">
+                <button class="btn btn-sm active" data-view="hourly">Hourly</button>
+                <button class="btn btn-sm btn-secondary" data-view="daily">Daily</button>
+                <button class="btn btn-sm btn-secondary" data-view="weekly">Weekly</button>
+            </div>
+        </div>
+        <div class="chart-container large">
+            <canvas id="water-chart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Usage Periods -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Usage Patterns</h3>
+        </div>
+        <div class="usage-periods">
+            <div class="period-item morning">
+                <div class="period-icon">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="period-details">
+                    <h4>Morning Peak</h4>
+                    <p class="time">6:00 AM - 10:00 AM</p>
+                    <p class="usage">~35% of daily usage</p>
+                </div>
+            </div>
+            
+            <div class="period-item evening">
+                <div class="period-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="period-details">
+                    <h4>Evening Peak</h4>
+                    <p class="time">6:00 PM - 10:00 PM</p>
+                    <p class="usage">~35% of daily usage</p>
+                </div>
+            </div>
+            
+            <div class="period-item midday">
+                <div class="period-icon">
+                    <i class="fas fa-cloud-sun"></i>
+                </div>
+                <div class="period-details">
+                    <h4>Midday</h4>
+                    <p class="time">10:00 AM - 6:00 PM</p>
+                    <p class="usage">~20% of daily usage</p>
+                </div>
+            </div>
+            
+            <div class="period-item night">
+                <div class="period-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="period-details">
+                    <h4>Night</h4>
+                    <p class="time">10:00 PM - 6:00 AM</p>
+                    <p class="usage">~10% of daily usage</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Breakdown -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Estimated Usage by Activity</h3>
+        <button class="btn btn-sm btn-secondary" onclick="refreshActivities()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+        </button>
+    </div>
+    <div class="activity-grid" id="activity-breakdown">
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #cffafe; color: #0891b2;">
+                <i class="fas fa-toilet"></i>
+            </div>
+            <div class="activity-details">
+                <h4>Toilet</h4>
+                <div class="activity-usage">-- L</div>
+                <div class="activity-info">~9 L per flush</div>
+            </div>
+            <div class="activity-bar" style="--percent: 30%;"></div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #dbeafe; color: #2563eb;">
+                <i class="fas fa-shower"></i>
+            </div>
+            <div class="activity-details">
+                <h4>Shower/Bath</h4>
+                <div class="activity-usage">-- L</div>
+                <div class="activity-info">~65 L per shower</div>
+            </div>
+            <div class="activity-bar" style="--percent: 25%;"></div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #fef3c7; color: #f59e0b;">
+                <i class="fas fa-faucet"></i>
+            </div>
+            <div class="activity-details">
+                <h4>Faucets</h4>
+                <div class="activity-usage">-- L</div>
+                <div class="activity-info">~8 L per use</div>
+            </div>
+            <div class="activity-bar" style="--percent: 15%;"></div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #d1fae5; color: #10b981;">
+                <i class="fas fa-tshirt"></i>
+            </div>
+            <div class="activity-details">
+                <h4>Laundry</h4>
+                <div class="activity-usage">-- L</div>
+                <div class="activity-info">~50 L per load</div>
+            </div>
+            <div class="activity-bar" style="--percent: 15%;"></div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #e0e7ff; color: #6366f1;">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <div class="activity-details">
+                <h4>Dishwasher</h4>
+                <div class="activity-usage">-- L</div>
+                <div class="activity-info">~15 L per cycle</div>
+            </div>
+            <div class="activity-bar" style="--percent: 5%;"></div>
+        </div>
+        
+        <div class="activity-item">
+            <div class="activity-icon" style="background: #fee2e2; color: #ef4444;">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <div class="activity-details">
+                <h4>Garden</h4>
+                <div class="activity-usage">-- L</div>
+                <div class="activity-info">Variable</div>
+            </div>
+            <div class="activity-bar" style="--percent: 10%;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommendations -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Water Saving Tips</h3>
+    </div>
+    <div id="water-tips" class="tips-grid">
+        <!-- Tips will be loaded here -->
+    </div>
+</div>
+
+<!-- Benchmarks -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Usage Benchmarks</h3>
+    </div>
+    <div class="benchmark-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md);">
+        <div class="benchmark-item">
+            <div class="benchmark-label">Per Person (Daily)</div>
+            <div class="benchmark-values">
+                <div class="benchmark-row">
+                    <span>Excellent</span>
+                    <span class="text-success">&lt; 80 L</span>
+                </div>
+                <div class="benchmark-row">
+                    <span>Good</span>
+                    <span class="text-info">80-120 L</span>
+                </div>
+                <div class="benchmark-row">
+                    <span>Average</span>
+                    <span class="text-warning">120-150 L</span>
+                </div>
+                <div class="benchmark-row">
+                    <span>High</span>
+                    <span class="text-error">&gt; 150 L</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="benchmark-item">
+            <div class="benchmark-label">Household of 4 (Daily)</div>
+            <div class="benchmark-values">
+                <div class="benchmark-row">
+                    <span>Excellent</span>
+                    <span class="text-success">&lt; 350 L</span>
+                </div>
+                <div class="benchmark-row">
+                    <span>Good</span>
+                    <span class="text-info">350-450 L</span>
+                </div>
+                <div class="benchmark-row">
+                    <span>Average</span>
+                    <span class="text-warning">450-550 L</span>
+                </div>
+                <div class="benchmark-row">
+                    <span>High</span>
+                    <span class="text-error">&gt; 550 L</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="benchmark-item your-usage">
+            <div class="benchmark-label">Your Daily Average</div>
+            <div class="your-value" id="your-daily-average">-- L</div>
+            <div class="your-rating" id="your-rating">
+                <span class="badge badge-info">Calculating...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .usage-periods {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .period-item {
+        display: flex;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        align-items: center;
+    }
+    
+    .period-item.morning {
+        border-left: 4px solid #f59e0b;
+    }
+    
+    .period-item.evening {
+        border-left: 4px solid #8b5cf6;
+    }
+    
+    .period-item.midday {
+        border-left: 4px solid #10b981;
+    }
+    
+    .period-item.night {
+        border-left: 4px solid #6366f1;
+    }
+    
+    .period-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface-color);
+        color: var(--text-secondary);
+    }
+    
+    .period-details h4 {
+        margin: 0;
+        font-size: var(--text-sm);
+    }
+    
+    .period-details .time,
+    .period-details .usage {
+        margin: 0;
+        font-size: var(--text-xs);
+        color: var(--text-muted);
+    }
+    
+    .activity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .activity-item {
+        display: flex;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .activity-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .activity-details h4 {
+        margin: 0;
+        font-size: var(--text-sm);
+    }
+    
+    .activity-usage {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    .activity-info {
+        font-size: var(--text-xs);
+        color: var(--text-muted);
+    }
+    
+    .activity-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        width: var(--percent);
+        background: var(--water-color);
+    }
+    
+    .benchmark-item {
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+    }
+    
+    .benchmark-label {
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+        color: var(--text-primary);
+    }
+    
+    .benchmark-row {
+        display: flex;
+        justify-content: space-between;
+        padding: var(--spacing-xs) 0;
+        font-size: var(--text-sm);
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .benchmark-row:last-child {
+        border-bottom: none;
+    }
+    
+    .benchmark-item.your-usage {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.05));
+        text-align: center;
+    }
+    
+    .your-value {
+        font-size: var(--text-3xl);
+        font-weight: 700;
+        color: var(--water-color);
+        margin: var(--spacing-md) 0;
+    }
+    
+    .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .tip-card {
+        display: flex;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+    }
+    
+    .tip-icon.water {
+        background: var(--water-light);
+        color: var(--water-dark);
+    }
+    
+    .tip-content h4 {
+        margin: 0 0 var(--spacing-xs);
+        font-size: var(--text-sm);
+    }
+    
+    .tip-content p {
+        margin: 0 0 var(--spacing-xs);
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+    }
+    
+    .tip-savings {
+        font-size: var(--text-xs);
+        color: var(--success-color);
+        font-weight: 500;
+    }
+    
+    @media (max-width: 1024px) {
+        [style*="grid-template-columns: 2fr 1fr"] {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async function() {
+        await loadWaterData();
+        await loadWaterTips();
+        initChart();
+    });
+    
+    // Load water data
+    async function loadWaterData() {
+        try {
+            const stats = await API.dashboard.stats('month', 'water');
+            console.log('Water stats:', stats);
+        } catch (error) {
+            console.error('Error loading water data:', error);
+        }
+    }
+    
+    // Load tips
+    async function loadWaterTips() {
+        try {
+            const result = await API.water.recommendations();
+            const container = document.getElementById('water-tips');
+            
+            if (result.success && result.recommendations) {
+                container.innerHTML = result.recommendations.slice(0, 6).map(tip => `
+                    <div class="tip-card">
+                        <div class="tip-icon water" style="width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>${tip.title}</h4>
+                            <p>${tip.description}</p>
+                            <span class="tip-savings">${tip.potential_savings}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Error loading tips:', error);
+        }
+    }
+    
+    // Initialize chart
+    function initChart() {
+        const ctx = document.getElementById('water-chart');
+        if (!ctx) return;
+        
+        // Generate sample data
+        const labels = [];
+        const data = [];
+        const now = new Date();
+        
+        for (let i = 23; i >= 0; i--) {
+            const hour = new Date(now - i * 3600000);
+            labels.push(hour.getHours() + ':00');
+            
+            // Simulate usage pattern
+            const h = hour.getHours();
+            let base = 15;
+            if (h >= 6 && h <= 9) base = 45;
+            else if (h >= 18 && h <= 22) base = 40;
+            else if (h >= 0 && h <= 5) base = 5;
+            
+            data.push(base + Math.random() * 10);
+        }
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Consumption (L)',
+                    data: data,
+                    backgroundColor: 'rgba(6, 182, 212, 0.7)',
+                    borderColor: '#06b6d4',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Liters'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Refresh activities
+    function refreshActivities() {
+        const items = document.querySelectorAll('.activity-usage');
+        items.forEach(item => {
+            const value = (Math.random() * 200 + 50).toFixed(0);
+            item.textContent = `${value} L`;
+        });
+    }
+    
+    // Get predictions
+    document.getElementById('get-predictions')?.addEventListener('click', async function() {
+        try {
+            const result = await API.predictions.demo('water', 24);
+            sessionStorage.setItem('predictionResult', JSON.stringify(result.water || result));
+            sessionStorage.setItem('predictionResource', 'water');
+            window.location.href = '/predictions';
+        } catch (error) {
+            console.error('Error getting predictions:', error);
+        }
+    });
+    
+    // Check for leaks
+    document.getElementById('check-leaks')?.addEventListener('click', async function() {
+        try {
+            // Show loading
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner" style="width: 16px; height: 16px;"></span> Checking...';
+            
+            // Simulate leak check (in real app, would analyze actual data)
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Show result
+            const hasLeak = Math.random() > 0.7; // 30% chance of "detecting" a leak for demo
+            
+            if (hasLeak) {
+                document.getElementById('leak-alert').style.display = 'block';
+                document.getElementById('leak-status').textContent = 'Leak Detected!';
+                document.getElementById('leak-status').style.color = 'var(--error-color)';
+            } else {
+                alert('No leaks detected! Your water system appears to be functioning normally.');
+                document.getElementById('leak-status').textContent = 'No Leaks';
+                document.getElementById('leak-status').style.color = 'var(--success-color)';
+            }
+            
+            // Reset button
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-search"></i> Check for Leaks';
+            
+        } catch (error) {
+            console.error('Error checking for leaks:', error);
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-search"></i> Check for Leaks';
+        }
+    });
+</script>
+{% endblock %}
