@@ -1,0 +1,363 @@
+==> Cloning from https://github.com/DhruvBaghan/Echomind
+==> Checking out commit 1bdfd0f6c7bb7c54dcb3b0a49a7edd154e4443dc in branch main
+==> Installing Python version 3.11.6...
+==> Using Python version 3.11.6 via /opt/render/project/src/.python-version
+==> Docs on specifying a Python version: https://render.com/docs/python-version
+==> Using Poetry version 2.1.3 (default)
+==> Docs on specifying a Poetry version: https://render.com/docs/poetry-version
+==> Running build command 'pip install -r requirements.txt'...
+Collecting Flask==3.0.0 (from -r requirements.txt (line 6))
+  Obtaining dependency information for Flask==3.0.0 from https://files.pythonhosted.org/packages/36/42/015c23096649b908c809c69388a805a571a3bea44362fe87e33fc3afa01f/flask-3.0.0-py3-none-any.whl.metadata
+  Downloading flask-3.0.0-py3-none-any.whl.metadata (3.6 kB)
+Collecting Flask-CORS==4.0.0 (from -r requirements.txt (line 7))
+  Obtaining dependency information for Flask-CORS==4.0.0 from https://files.pythonhosted.org/packages/10/69/1e6cfb87117568a9de088c32d6258219e9d1ff7c131abf74249ef2031279/Flask_Cors-4.0.0-py2.py3-none-any.whl.metadata
+  Downloading Flask_Cors-4.0.0-py2.py3-none-any.whl.metadata (5.4 kB)
+Collecting Flask-SQLAlchemy==3.1.1 (from -r requirements.txt (line 8))
+  Obtaining dependency information for Flask-SQLAlchemy==3.1.1 from https://files.pythonhosted.org/packages/1d/6a/89963a5c6ecf166e8be29e0d1bf6806051ee8fe6c82e232842e3aeac9204/flask_sqlalchemy-3.1.1-py3-none-any.whl.metadata
+  Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl.metadata (3.4 kB)
+Collecting Flask-Login==0.6.3 (from -r requirements.txt (line 9))
+  Obtaining dependency information for Flask-Login==0.6.3 from https://files.pythonhosted.org/packages/59/f5/67e9cc5c2036f58115f9fe0f00d203cf6780c3ff8ae0e705e7a9d9e8ff9e/Flask_Login-0.6.3-py3-none-any.whl.metadata
+  Downloading Flask_Login-0.6.3-py3-none-any.whl.metadata (5.8 kB)
+Collecting Flask-WTF==1.2.1 (from -r requirements.txt (line 10))
+  Obtaining dependency information for Flask-WTF==1.2.1 from https://files.pythonhosted.org/packages/02/2b/0f0cf68a2f052ea3dbb8b6c8c2a7e8aea5e6df7410f5e289437fefbeb461/flask_wtf-1.2.1-py3-none-any.whl.metadata
+  Downloading flask_wtf-1.2.1-py3-none-any.whl.metadata (3.4 kB)
+Collecting Werkzeug==3.0.1 (from -r requirements.txt (line 11))
+  Obtaining dependency information for Werkzeug==3.0.1 from https://files.pythonhosted.org/packages/c3/fc/254c3e9b5feb89ff5b9076a23218dafbc99c96ac5941e900b71206e6313b/werkzeug-3.0.1-py3-none-any.whl.metadata
+  Downloading werkzeug-3.0.1-py3-none-any.whl.metadata (4.1 kB)
+Collecting prophet==1.1.5 (from -r requirements.txt (line 14))
+  Obtaining dependency information for prophet==1.1.5 from https://files.pythonhosted.org/packages/25/77/732831241003d9148913a2c101edd5ba23c3abeab8b8c511f0dd87afd786/prophet-1.1.5-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading prophet-1.1.5-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.5 kB)
+Collecting scikit-learn==1.3.2 (from -r requirements.txt (line 15))
+  Obtaining dependency information for scikit-learn==1.3.2 from https://files.pythonhosted.org/packages/0c/2a/d3ff6091406bc2207e0adb832ebd15e40ac685811c7e2e3b432bfd969b71/scikit_learn-1.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading scikit_learn-1.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
+Collecting joblib==1.3.2 (from -r requirements.txt (line 16))
+  Obtaining dependency information for joblib==1.3.2 from https://files.pythonhosted.org/packages/10/40/d551139c85db202f1f384ba8bcf96aca2f329440a844f924c8a0040b6d02/joblib-1.3.2-py3-none-any.whl.metadata
+  Downloading joblib-1.3.2-py3-none-any.whl.metadata (5.4 kB)
+Collecting pandas==2.1.3 (from -r requirements.txt (line 19))
+  Obtaining dependency information for pandas==2.1.3 from https://files.pythonhosted.org/packages/08/de/d4448c423484537ebc9373d3da2496a2e47f42ea11ff48e025cf49665471/pandas-2.1.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading pandas-2.1.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
+Collecting numpy==1.26.2 (from -r requirements.txt (line 20))
+  Obtaining dependency information for numpy==1.26.2 from https://files.pythonhosted.org/packages/b6/ab/5b893944b1602a366893559bfb227fdfb3ad7c7629b2a80d039bb5924367/numpy-1.26.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading numpy-1.26.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (61 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.2/61.2 kB 1.6 MB/s eta 0:00:00
+Collecting scipy==1.11.4 (from -r requirements.txt (line 21))
+  Obtaining dependency information for scipy==1.11.4 from https://files.pythonhosted.org/packages/6b/d4/d62ce38ba00dc67d7ec4ec5cc19d36958d8ed70e63778715ad626bcbc796/scipy-1.11.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading scipy-1.11.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (60 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.4/60.4 kB 2.0 MB/s eta 0:00:00
+Collecting SQLAlchemy==2.0.23 (from -r requirements.txt (line 24))
+  Obtaining dependency information for SQLAlchemy==2.0.23 from https://files.pythonhosted.org/packages/90/00/f588b08bb2ce214df96e7a045ddf9ffafab6bfac75e6c75f0a50fb9f8d2a/SQLAlchemy-2.0.23-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading SQLAlchemy-2.0.23-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.6 kB)
+Collecting psycopg2-binary==2.9.9 (from -r requirements.txt (line 25))
+  Obtaining dependency information for psycopg2-binary==2.9.9 from https://files.pythonhosted.org/packages/ce/85/62825cabc6aad53104b7b6d12eb2ad74737d268630032d07b74d4444cb72/psycopg2_binary-2.9.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading psycopg2_binary-2.9.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.4 kB)
+Collecting marshmallow==3.20.1 (from -r requirements.txt (line 28))
+  Obtaining dependency information for marshmallow==3.20.1 from https://files.pythonhosted.org/packages/ed/3c/cebfdcad015240014ff08b883d1c0c427f2ba45ae8c6572851b6ef136cad/marshmallow-3.20.1-py3-none-any.whl.metadata
+  Downloading marshmallow-3.20.1-py3-none-any.whl.metadata (7.8 kB)
+Collecting python-dotenv==1.0.0 (from -r requirements.txt (line 29))
+  Obtaining dependency information for python-dotenv==1.0.0 from https://files.pythonhosted.org/packages/44/2f/62ea1c8b593f4e093cc1a7768f0d46112107e790c3e478532329e434f00b/python_dotenv-1.0.0-py3-none-any.whl.metadata
+  Downloading python_dotenv-1.0.0-py3-none-any.whl.metadata (21 kB)
+Collecting email-validator==2.1.0 (from -r requirements.txt (line 30))
+  Obtaining dependency information for email-validator==2.1.0 from https://files.pythonhosted.org/packages/90/41/4767ff64e422734487a06384a66e62615b1f5cf9cf3b23295e22d3ecf711/email_validator-2.1.0-py3-none-any.whl.metadata
+  Downloading email_validator-2.1.0-py3-none-any.whl.metadata (25 kB)
+Collecting requests==2.31.0 (from -r requirements.txt (line 33))
+  Obtaining dependency information for requests==2.31.0 from https://files.pythonhosted.org/packages/70/8e/0e2d847013cb52cd35b38c009bb167a1a26b2ce6cd6965bf26b47bc0bf44/requests-2.31.0-py3-none-any.whl.metadata
+  Downloading requests-2.31.0-py3-none-any.whl.metadata (4.6 kB)
+Collecting python-dateutil==2.8.2 (from -r requirements.txt (line 34))
+  Obtaining dependency information for python-dateutil==2.8.2 from https://files.pythonhosted.org/packages/36/7a/87837f39d0296e723bb9b62bbb257d0355c7f6128853c78955f57342a56d/python_dateutil-2.8.2-py2.py3-none-any.whl.metadata
+  Downloading python_dateutil-2.8.2-py2.py3-none-any.whl.metadata (8.2 kB)
+Collecting pytz==2023.3 (from -r requirements.txt (line 35))
+  Obtaining dependency information for pytz==2023.3 from https://files.pythonhosted.org/packages/7f/99/ad6bd37e748257dd70d6f85d916cafe79c0b0f5e2e95b11f7fbc82bf3110/pytz-2023.3-py2.py3-none-any.whl.metadata
+  Downloading pytz-2023.3-py2.py3-none-any.whl.metadata (22 kB)
+Collecting loguru==0.7.2 (from -r requirements.txt (line 38))
+  Obtaining dependency information for loguru==0.7.2 from https://files.pythonhosted.org/packages/03/0a/4f6fed21aa246c6b49b561ca55facacc2a44b87d65b8b92362a8e99ba202/loguru-0.7.2-py3-none-any.whl.metadata
+  Downloading loguru-0.7.2-py3-none-any.whl.metadata (23 kB)
+Collecting pytest==7.4.3 (from -r requirements.txt (line 41))
+  Obtaining dependency information for pytest==7.4.3 from https://files.pythonhosted.org/packages/f3/8c/f16efd81ca8e293b2cc78f111190a79ee539d0d5d36ccd49975cb3beac60/pytest-7.4.3-py3-none-any.whl.metadata
+  Downloading pytest-7.4.3-py3-none-any.whl.metadata (7.9 kB)
+Collecting pytest-cov==4.1.0 (from -r requirements.txt (line 42))
+  Obtaining dependency information for pytest-cov==4.1.0 from https://files.pythonhosted.org/packages/a7/4b/8b78d126e275efa2379b1c2e09dc52cf70df16fc3b90613ef82531499d73/pytest_cov-4.1.0-py3-none-any.whl.metadata
+  Downloading pytest_cov-4.1.0-py3-none-any.whl.metadata (26 kB)
+Collecting gunicorn==21.2.0 (from -r requirements.txt (line 45))
+  Obtaining dependency information for gunicorn==21.2.0 from https://files.pythonhosted.org/packages/0e/2a/c3a878eccb100ccddf45c50b6b8db8cf3301a6adede6e31d48e8531cab13/gunicorn-21.2.0-py3-none-any.whl.metadata
+  Downloading gunicorn-21.2.0-py3-none-any.whl.metadata (4.1 kB)
+Collecting matplotlib==3.8.2 (from -r requirements.txt (line 48))
+  Obtaining dependency information for matplotlib==3.8.2 from https://files.pythonhosted.org/packages/92/1a/cd3e0c90d1a763ad90073e13b189b4702f11becf4e71dbbad70a7a149811/matplotlib-3.8.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading matplotlib-3.8.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.8 kB)
+Collecting seaborn==0.13.0 (from -r requirements.txt (line 49))
+  Obtaining dependency information for seaborn==0.13.0 from https://files.pythonhosted.org/packages/7b/e5/83fcd7e9db036c179e0352bfcd20f81d728197a16f883e7b90307a88e65e/seaborn-0.13.0-py3-none-any.whl.metadata
+  Downloading seaborn-0.13.0-py3-none-any.whl.metadata (5.3 kB)
+Collecting Jinja2>=3.1.2 (from Flask==3.0.0->-r requirements.txt (line 6))
+  Obtaining dependency information for Jinja2>=3.1.2 from https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl.metadata
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting itsdangerous>=2.1.2 (from Flask==3.0.0->-r requirements.txt (line 6))
+  Obtaining dependency information for itsdangerous>=2.1.2 from https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl.metadata
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting click>=8.1.3 (from Flask==3.0.0->-r requirements.txt (line 6))
+  Obtaining dependency information for click>=8.1.3 from https://files.pythonhosted.org/packages/98/78/01c019cdb5d6498122777c1a43056ebb3ebfeef2076d9d026bfe15583b2b/click-8.3.1-py3-none-any.whl.metadata
+  Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting blinker>=1.6.2 (from Flask==3.0.0->-r requirements.txt (line 6))
+  Obtaining dependency information for blinker>=1.6.2 from https://files.pythonhosted.org/packages/10/cb/f2ad4230dc2eb1a74edf38f1a38b9b52277f75bef262d8908e60d957e13c/blinker-1.9.0-py3-none-any.whl.metadata
+  Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting wtforms (from Flask-WTF==1.2.1->-r requirements.txt (line 10))
+  Obtaining dependency information for wtforms from https://files.pythonhosted.org/packages/08/c9/2088fb5645cd289c99ebe0d4cdcc723922a1d8e1beaefb0f6f76dff9b21c/wtforms-3.2.1-py3-none-any.whl.metadata
+  Downloading wtforms-3.2.1-py3-none-any.whl.metadata (5.3 kB)
+Collecting MarkupSafe>=2.1.1 (from Werkzeug==3.0.1->-r requirements.txt (line 11))
+  Obtaining dependency information for MarkupSafe>=2.1.1 from https://files.pythonhosted.org/packages/30/ac/0273f6fcb5f42e314c6d8cd99effae6a5354604d461b8d392b5ec9530a54/markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+  Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting cmdstanpy>=1.0.4 (from prophet==1.1.5->-r requirements.txt (line 14))
+  Obtaining dependency information for cmdstanpy>=1.0.4 from https://files.pythonhosted.org/packages/ef/04/7bbe85aa6abf99236cc657ceb5a629f63a82a01910a095533111ea3860f3/cmdstanpy-1.3.0-py3-none-any.whl.metadata
+  Downloading cmdstanpy-1.3.0-py3-none-any.whl.metadata (4.2 kB)
+Collecting holidays>=0.25 (from prophet==1.1.5->-r requirements.txt (line 14))
+  Obtaining dependency information for holidays>=0.25 from https://files.pythonhosted.org/packages/96/6d/6a63fe3964425c65e8a8c4a2999daa90171a2dab30775a1cbda92394345b/holidays-0.85-py3-none-any.whl.metadata
+  Downloading holidays-0.85-py3-none-any.whl.metadata (50 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50.0/50.0 kB 8.0 MB/s eta 0:00:00
+Collecting tqdm>=4.36.1 (from prophet==1.1.5->-r requirements.txt (line 14))
+  Obtaining dependency information for tqdm>=4.36.1 from https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl.metadata
+  Downloading tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.7/57.7 kB 7.2 MB/s eta 0:00:00
+Collecting importlib-resources (from prophet==1.1.5->-r requirements.txt (line 14))
+  Obtaining dependency information for importlib-resources from https://files.pythonhosted.org/packages/a4/ed/1f1afb2e9e7f38a545d628f864d562a5ae64fe6f7a10e28ffb9b185b4e89/importlib_resources-6.5.2-py3-none-any.whl.metadata
+  Downloading importlib_resources-6.5.2-py3-none-any.whl.metadata (3.9 kB)
+Collecting threadpoolctl>=2.0.0 (from scikit-learn==1.3.2->-r requirements.txt (line 15))
+  Obtaining dependency information for threadpoolctl>=2.0.0 from https://files.pythonhosted.org/packages/32/d5/f9a850d79b0851d1d4ef6456097579a9005b31fea68726a4ae5f2d82ddd9/threadpoolctl-3.6.0-py3-none-any.whl.metadata
+  Downloading threadpoolctl-3.6.0-py3-none-any.whl.metadata (13 kB)
+Collecting tzdata>=2022.1 (from pandas==2.1.3->-r requirements.txt (line 19))
+  Obtaining dependency information for tzdata>=2022.1 from https://files.pythonhosted.org/packages/5c/23/c7abc0ca0a1526a0774eca151daeb8de62ec457e77262b66b359c3c7679e/tzdata-2025.2-py2.py3-none-any.whl.metadata
+  Downloading tzdata-2025.2-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting typing-extensions>=4.2.0 (from SQLAlchemy==2.0.23->-r requirements.txt (line 24))
+  Obtaining dependency information for typing-extensions>=4.2.0 from https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl.metadata
+  Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting greenlet!=0.4.17 (from SQLAlchemy==2.0.23->-r requirements.txt (line 24))
+  Obtaining dependency information for greenlet!=0.4.17 from https://files.pythonhosted.org/packages/1f/8e/abdd3f14d735b2929290a018ecf133c901be4874b858dd1c604b9319f064/greenlet-3.2.4-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata
+  Downloading greenlet-3.2.4-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (4.1 kB)
+Collecting packaging>=17.0 (from marshmallow==3.20.1->-r requirements.txt (line 28))
+  Obtaining dependency information for packaging>=17.0 from https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl.metadata
+  Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting dnspython>=2.0.0 (from email-validator==2.1.0->-r requirements.txt (line 30))
+  Obtaining dependency information for dnspython>=2.0.0 from https://files.pythonhosted.org/packages/ba/5a/18ad964b0086c6e62e2e7500f7edc89e3faa45033c71c1893d34eed2b2de/dnspython-2.8.0-py3-none-any.whl.metadata
+  Downloading dnspython-2.8.0-py3-none-any.whl.metadata (5.7 kB)
+Collecting idna>=2.0.0 (from email-validator==2.1.0->-r requirements.txt (line 30))
+  Obtaining dependency information for idna>=2.0.0 from https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl.metadata
+  Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Collecting charset-normalizer<4,>=2 (from requests==2.31.0->-r requirements.txt (line 33))
+  Obtaining dependency information for charset-normalizer<4,>=2 from https://files.pythonhosted.org/packages/6d/fc/de9cce525b2c5b94b47c70a4b4fb19f871b24995c728e957ee68ab1671ea/charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+  Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (37 kB)
+Collecting urllib3<3,>=1.21.1 (from requests==2.31.0->-r requirements.txt (line 33))
+  Obtaining dependency information for urllib3<3,>=1.21.1 from https://files.pythonhosted.org/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl.metadata
+  Downloading urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting certifi>=2017.4.17 (from requests==2.31.0->-r requirements.txt (line 33))
+  Obtaining dependency information for certifi>=2017.4.17 from https://files.pythonhosted.org/packages/70/7d/9bc192684cea499815ff478dfcdc13835ddf401365057044fb721ec6bddb/certifi-2025.11.12-py3-none-any.whl.metadata
+  Downloading certifi-2025.11.12-py3-none-any.whl.metadata (2.5 kB)
+Collecting six>=1.5 (from python-dateutil==2.8.2->-r requirements.txt (line 34))
+  Obtaining dependency information for six>=1.5 from https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl.metadata
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting iniconfig (from pytest==7.4.3->-r requirements.txt (line 41))
+  Obtaining dependency information for iniconfig from https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl.metadata
+  Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting pluggy<2.0,>=0.12 (from pytest==7.4.3->-r requirements.txt (line 41))
+  Obtaining dependency information for pluggy<2.0,>=0.12 from https://files.pythonhosted.org/packages/54/20/4d324d65cc6d9205fabedc306948156824eb9f0ee1633355a8f7ec5c66bf/pluggy-1.6.0-py3-none-any.whl.metadata
+  Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Collecting coverage[toml]>=5.2.1 (from pytest-cov==4.1.0->-r requirements.txt (line 42))
+  Obtaining dependency information for coverage[toml]>=5.2.1 from https://files.pythonhosted.org/packages/f4/36/2d93fbf6a04670f3874aed397d5a5371948a076e3249244a9e84fb0e02d6/coverage-7.12.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata
+  Downloading coverage-7.12.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (9.1 kB)
+Collecting contourpy>=1.0.1 (from matplotlib==3.8.2->-r requirements.txt (line 48))
+  Obtaining dependency information for contourpy>=1.0.1 from https://files.pythonhosted.org/packages/5f/4b/6157f24ca425b89fe2eb7e7be642375711ab671135be21e6faa100f7448c/contourpy-1.3.3-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata
+  Downloading contourpy-1.3.3-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (5.5 kB)
+Collecting cycler>=0.10 (from matplotlib==3.8.2->-r requirements.txt (line 48))
+  Obtaining dependency information for cycler>=0.10 from https://files.pythonhosted.org/packages/e7/05/c19819d5e3d95294a6f5947fb9b9629efb316b96de511b418c53d245aae6/cycler-0.12.1-py3-none-any.whl.metadata
+  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting fonttools>=4.22.0 (from matplotlib==3.8.2->-r requirements.txt (line 48))
+  Obtaining dependency information for fonttools>=4.22.0 from https://files.pythonhosted.org/packages/d2/d2/9f4e4c4374dd1daa8367784e1bd910f18ba886db1d6b825b12edf6db3edc/fonttools-4.60.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata
+  Downloading fonttools-4.60.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (112 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 112.3/112.3 kB 10.4 MB/s eta 0:00:00
+Collecting kiwisolver>=1.3.1 (from matplotlib==3.8.2->-r requirements.txt (line 48))
+  Obtaining dependency information for kiwisolver>=1.3.1 from https://files.pythonhosted.org/packages/66/e1/e533435c0be77c3f64040d68d7a657771194a63c279f55573188161e81ca/kiwisolver-1.4.9-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata
+  Downloading kiwisolver-1.4.9-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.3 kB)
+Collecting pillow>=8 (from matplotlib==3.8.2->-r requirements.txt (line 48))
+  Obtaining dependency information for pillow>=8 from https://files.pythonhosted.org/packages/41/1e/db9470f2d030b4995083044cd8738cdd1bf773106819f6d8ba12597d5352/pillow-12.0.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata
+  Downloading pillow-12.0.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+Collecting pyparsing>=2.3.1 (from matplotlib==3.8.2->-r requirements.txt (line 48))
+  Obtaining dependency information for pyparsing>=2.3.1 from https://files.pythonhosted.org/packages/10/5e/1aa9a93198c6b64513c9d7752de7422c06402de6600a8767da1524f9570b/pyparsing-3.2.5-py3-none-any.whl.metadata
+  Downloading pyparsing-3.2.5-py3-none-any.whl.metadata (5.0 kB)
+Collecting stanio<2.0.0,>=0.4.0 (from cmdstanpy>=1.0.4->prophet==1.1.5->-r requirements.txt (line 14))
+  Obtaining dependency information for stanio<2.0.0,>=0.4.0 from https://files.pythonhosted.org/packages/56/87/37a80e4d5bd453c33262d8fb618b6840fd98d24ed08e046a4a9b10177fa3/stanio-0.5.1-py3-none-any.whl.metadata
+  Downloading stanio-0.5.1-py3-none-any.whl.metadata (1.6 kB)
+WARNING: The candidate selected for download or install is a yanked version: 'email-validator' candidate (version 2.1.0 at https://files.pythonhosted.org/packages/90/41/4767ff64e422734487a06384a66e62615b1f5cf9cf3b23295e22d3ecf711/email_validator-2.1.0-py3-none-any.whl (from https://pypi.org/simple/email-validator/) (requires-python:>=3.7))
+Reason for being yanked: Forgot to drop Python 3.7 from python_requires, see https://github.com/JoshData/python-email-validator/pull/118
+Downloading flask-3.0.0-py3-none-any.whl (99 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.7/99.7 kB 14.4 MB/s eta 0:00:00
+Downloading Flask_Cors-4.0.0-py2.py3-none-any.whl (14 kB)
+Downloading flask_sqlalchemy-3.1.1-py3-none-any.whl (25 kB)
+Downloading Flask_Login-0.6.3-py3-none-any.whl (17 kB)
+Downloading flask_wtf-1.2.1-py3-none-any.whl (12 kB)
+Downloading werkzeug-3.0.1-py3-none-any.whl (226 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 226.7/226.7 kB 21.0 MB/s eta 0:00:00
+Downloading prophet-1.1.5-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (14.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.4/14.4 MB 91.2 MB/s eta 0:00:00
+Downloading scikit_learn-1.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.9/10.9 MB 60.1 MB/s eta 0:00:00
+Downloading joblib-1.3.2-py3-none-any.whl (302 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 302.2/302.2 kB 30.8 MB/s eta 0:00:00
+Downloading pandas-2.1.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.2/12.2 MB 111.0 MB/s eta 0:00:00
+Downloading numpy-1.26.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 11.0 MB/s eta 0:00:00
+Downloading scipy-1.11.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (36.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 36.4/36.4 MB 4.9 MB/s eta 0:00:00
+Downloading SQLAlchemy-2.0.23-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 25.2 MB/s eta 0:00:00
+Downloading psycopg2_binary-2.9.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 16.7 MB/s eta 0:00:00
+Downloading marshmallow-3.20.1-py3-none-any.whl (49 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.4/49.4 kB 330.5 kB/s eta 0:00:00
+Downloading python_dotenv-1.0.0-py3-none-any.whl (19 kB)
+Downloading email_validator-2.1.0-py3-none-any.whl (32 kB)
+Downloading requests-2.31.0-py3-none-any.whl (62 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.6/62.6 kB 446.6 kB/s eta 0:00:00
+Downloading python_dateutil-2.8.2-py2.py3-none-any.whl (247 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 247.7/247.7 kB 2.4 MB/s eta 0:00:00
+Downloading pytz-2023.3-py2.py3-none-any.whl (502 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 502.3/502.3 kB 7.2 MB/s eta 0:00:00
+Downloading loguru-0.7.2-py3-none-any.whl (62 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.5/62.5 kB 734.8 kB/s eta 0:00:00
+Downloading pytest-7.4.3-py3-none-any.whl (325 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 325.1/325.1 kB 3.3 MB/s eta 0:00:00
+Downloading pytest_cov-4.1.0-py3-none-any.whl (21 kB)
+Downloading gunicorn-21.2.0-py3-none-any.whl (80 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 4.6 MB/s eta 0:00:00
+Downloading matplotlib-3.8.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 12.8 MB/s eta 0:00:00
+Downloading seaborn-0.13.0-py3-none-any.whl (294 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 294.6/294.6 kB 1.7 MB/s eta 0:00:00
+Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Downloading certifi-2025.11.12-py3-none-any.whl (159 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 159.4/159.4 kB 4.0 MB/s eta 0:00:00
+Downloading charset_normalizer-3.4.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (151 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 151.6/151.6 kB 2.9 MB/s eta 0:00:00
+Downloading click-8.3.1-py3-none-any.whl (108 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.3/108.3 kB 1.1 MB/s eta 0:00:00
+Downloading cmdstanpy-1.3.0-py3-none-any.whl (99 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 99.1/99.1 kB 1.2 MB/s eta 0:00:00
+Downloading contourpy-1.3.3-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (355 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 355.2/355.2 kB 3.4 MB/s eta 0:00:00
+Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Downloading dnspython-2.8.0-py3-none-any.whl (331 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 331.1/331.1 kB 4.6 MB/s eta 0:00:00
+Downloading fonttools-4.60.1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.0/5.0 MB 21.6 MB/s eta 0:00:00
+Downloading greenlet-3.2.4-cp311-cp311-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (587 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 587.7/587.7 kB 10.4 MB/s eta 0:00:00
+Downloading holidays-0.85-py3-none-any.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 28.0 MB/s eta 0:00:00
+Downloading idna-3.11-py3-none-any.whl (71 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 2.0 MB/s eta 0:00:00
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 8.2 MB/s eta 0:00:00
+Downloading kiwisolver-1.4.9-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 31.5 MB/s eta 0:00:00
+Downloading markupsafe-3.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Downloading packaging-25.0-py3-none-any.whl (66 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.5/66.5 kB 4.8 MB/s eta 0:00:00
+Downloading pillow-12.0.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.0/7.0 MB 24.0 MB/s eta 0:00:00
+Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+Downloading pyparsing-3.2.5-py3-none-any.whl (113 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 113.9/113.9 kB 9.0 MB/s eta 0:00:00
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+Downloading tqdm-4.67.1-py3-none-any.whl (78 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.5/78.5 kB 11.5 MB/s eta 0:00:00
+Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 6.6 MB/s eta 0:00:00
+Downloading tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 347.8/347.8 kB 37.5 MB/s eta 0:00:00
+Downloading urllib3-2.5.0-py3-none-any.whl (129 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 129.8/129.8 kB 19.0 MB/s eta 0:00:00
+Downloading importlib_resources-6.5.2-py3-none-any.whl (37 kB)
+Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Downloading wtforms-3.2.1-py3-none-any.whl (152 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152.5/152.5 kB 17.0 MB/s eta 0:00:00
+Downloading stanio-0.5.1-py3-none-any.whl (8.1 kB)
+Downloading coverage-7.12.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (250 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 250.4/250.4 kB 25.5 MB/s eta 0:00:00
+Installing collected packages: pytz, urllib3, tzdata, typing-extensions, tqdm, threadpoolctl, six, python-dotenv, pyparsing, psycopg2-binary, pluggy, pillow, packaging, numpy, MarkupSafe, loguru, kiwisolver, joblib, itsdangerous, iniconfig, importlib-resources, idna, greenlet, fonttools, dnspython, cycler, coverage, click, charset-normalizer, certifi, blinker, wtforms, Werkzeug, stanio, SQLAlchemy, scipy, requests, python-dateutil, pytest, marshmallow, Jinja2, gunicorn, email-validator, contourpy, scikit-learn, pytest-cov, pandas, matplotlib, holidays, Flask, seaborn, Flask-WTF, Flask-SQLAlchemy, Flask-Login, Flask-CORS, cmdstanpy, prophet
+Successfully installed Flask-3.0.0 Flask-CORS-4.0.0 Flask-Login-0.6.3 Flask-SQLAlchemy-3.1.1 Flask-WTF-1.2.1 Jinja2-3.1.6 MarkupSafe-3.0.3 SQLAlchemy-2.0.23 Werkzeug-3.0.1 blinker-1.9.0 certifi-2025.11.12 charset-normalizer-3.4.4 click-8.3.1 cmdstanpy-1.3.0 contourpy-1.3.3 coverage-7.12.0 cycler-0.12.1 dnspython-2.8.0 email-validator-2.1.0 fonttools-4.60.1 greenlet-3.2.4 gunicorn-21.2.0 holidays-0.85 idna-3.11 importlib-resources-6.5.2 iniconfig-2.3.0 itsdangerous-2.2.0 joblib-1.3.2 kiwisolver-1.4.9 loguru-0.7.2 marshmallow-3.20.1 matplotlib-3.8.2 numpy-1.26.2 packaging-25.0 pandas-2.1.3 pillow-12.0.0 pluggy-1.6.0 prophet-1.1.5 psycopg2-binary-2.9.9 pyparsing-3.2.5 pytest-7.4.3 pytest-cov-4.1.0 python-dateutil-2.8.2 python-dotenv-1.0.0 pytz-2023.3 requests-2.31.0 scikit-learn-1.3.2 scipy-1.11.4 seaborn-0.13.0 six-1.17.0 stanio-0.5.1 threadpoolctl-3.6.0 tqdm-4.67.1 typing-extensions-4.15.0 tzdata-2025.2 urllib3-2.5.0 wtforms-3.2.1
+[notice] A new release of pip is available: 23.2.1 -> 25.3
+[notice] To update, run: pip install --upgrade pip
+==> Uploading build...
+==> Uploaded in 12.5s. Compression took 5.5s
+==> Build successful 🎉
+==> Deploying...
+==> Running 'gunicorn app:app'
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/bin/gunicorn", line 8, in <module>
+    sys.exit(run())
+             ^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 67, in run
+    WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]").run()
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/base.py", line 236, in run
+    super().run()
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/base.py", line 72, in run
+    Arbiter(self).run()
+    ^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/arbiter.py", line 58, in __init__
+    self.setup(app)
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/arbiter.py", line 118, in setup
+    self.app.wsgi()
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/util.py", line 371, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/python/Python-3.11.6/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app'
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'gunicorn app:app'
+Traceback (most recent call last):
+  File "/opt/render/project/src/.venv/bin/gunicorn", line 8, in <module>
+    sys.exit(run())
+             ^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 67, in run
+    WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]").run()
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/base.py", line 236, in run
+    super().run()
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/base.py", line 72, in run
+    Arbiter(self).run()
+    ^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/arbiter.py", line 58, in __init__
+    self.setup(app)
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/arbiter.py", line 118, in setup
+    self.app.wsgi()
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+                    ^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 58, in load
+    return self.load_wsgiapp()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/app/wsgiapp.py", line 48, in load_wsgiapp
+    return util.import_app(self.app_uri)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/src/.venv/lib/python3.11/site-packages/gunicorn/util.py", line 371, in import_app
+    mod = importlib.import_module(module)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/render/project/python/Python-3.11.6/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'app
