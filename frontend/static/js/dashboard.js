@@ -144,9 +144,9 @@ const Dashboard = {
      * Update predictions section
      */
     updatePredictions(data) {
-        if (!data?.predictions_summary) return;
+        if (!data) return;
         
-        const summary = data.predictions_summary;
+        const summary = data;
         
         // Electricity prediction
         if (summary.electricity) {
