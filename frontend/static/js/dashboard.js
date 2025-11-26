@@ -128,7 +128,7 @@ const Dashboard = {
             this.updateElement('electricity-consumption', 
                 `${elecStats.consumption?.toFixed(1) || 0} kWh`);
             this.updateElement('electricity-trend', 
-                this.getTrendIcon(elecStats.trend));
+                this.getTrendIcon(elecStats.trend), true);
         }
         
         // Water stats
@@ -137,7 +137,7 @@ const Dashboard = {
             this.updateElement('water-consumption', 
                 `${waterStats.consumption?.toFixed(0) || 0} L`);
             this.updateElement('water-trend', 
-                this.getTrendIcon(waterStats.trend));
+                this.getTrendIcon(waterStats.trend), true);
         }
     },
     
@@ -388,9 +388,15 @@ const Dashboard = {
     /**
      * Update element text
      */
-    updateElement(id, value) {
+    updateElement(id, value, useHTML = false) {
         const el = document.getElementById(id);
-        if (el) el.textContent = value;
+        if (el) {
+            if (useHTML) {
+                el.innerHTML = value;
+            } else {
+                el.textContent = value;
+            }
+        }
     },
     
     /**
@@ -398,9 +404,9 @@ const Dashboard = {
      */
     getTrendIcon(trend) {
         const icons = {
-            increasing: '<i class="fas fa-arrow-up text-error"></i>',
-            decreasing: '<i class="fas fa-arrow-down text-success"></i>',
-            stable: '<i class="fas fa-minus text-muted"></i>'
+            increasing: '<span class="trend-icon text-error" title="Increasing">&#9650;</span>',
+            decreasing: '<span class="trend-icon text-success" title="Decreasing">&#9660;</span>',
+            stable: '<span class="trend-icon text-muted" title="Stable">&#8212;</span>'
         };
         return icons[trend] || icons.stable;
     },

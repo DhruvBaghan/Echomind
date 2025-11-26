@@ -138,7 +138,9 @@ python scripts/download_datasets.py --generate --process --days 90
 
 ## Known Issues
 - **Plotly import warning**: Prophet (the ML library) shows "Importing plotly failed. Interactive plots will not work." This is a non-critical warning. Plotly is an optional dependency for Prophet's visualization features, which are not used in this application. All core prediction and API functionality works correctly.
-- **Font Awesome icons**: Icons may not render properly due to CDN loading. This is a non-critical UI issue that does not affect functionality.
+
+## Recent UI Fixes
+- **Trend icons**: Dashboard trend indicators now use Unicode symbols (▲ ▼ —) instead of Font Awesome, ensuring they always display correctly regardless of CDN availability.
 
 ## Production Checklist (Before deploying to production)
 - [ ] Set `FLASK_DEBUG=False`

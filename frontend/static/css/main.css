@@ -664,6 +664,15 @@ a:hover {
 .text-warning { color: var(--warning-color); }
 .text-error { color: var(--error-color); }
 
+/* Trend Icons */
+.trend-icon {
+    display: inline-block;
+    font-size: var(--text-lg);
+    font-weight: bold;
+    margin-left: var(--spacing-xs);
+    vertical-align: middle;
+}
+
 .mt-sm { margin-top: var(--spacing-sm); }
 .mt-md { margin-top: var(--spacing-md); }
 .mt-lg { margin-top: var(--spacing-lg); }
