@@ -672,11 +672,12 @@ class PredictionService:
 
     def get_predictions_summary(self, periods: int = 24) -> Dict[str, Any]:
         """Get predictions summary for dashboard."""
-        demo = self.get_demo_predictions("both", periods)
+        electricity_summary = self._generate_synthetic_predictions("electricity", periods).get("summary", {})
+        water_summary = self._generate_synthetic_predictions("water", periods).get("summary", {})
         
         return {
-            "electricity": demo.get("electricity", {}).get("summary", {}),
-            "water": demo.get("water", {}).get("summary", {}),
+            "electricity": electricity_summary,
+            "water": water_summary,
             "available": True,
         }
 
