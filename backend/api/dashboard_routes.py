@@ -75,8 +75,9 @@ def get_overview():
         # Get current stats
         stats = _get_current_stats(user_id, period)
         
-        # Get predictions summary
-        predictions = _get_predictions_summary()
+        # Get predictions summary with periods based on selected time frame
+        periods_map = {"today": 24, "week": 168, "month": 720}
+        predictions = _get_predictions_summary(periods=periods_map.get(period, 24))
         
         # Get sustainability score
         sustainability = _get_sustainability_overview(stats)
@@ -466,10 +467,10 @@ def _get_current_stats(user_id: int, period: str) -> Dict[str, Any]:
     }
 
 
-def _get_predictions_summary() -> Dict[str, Any]:
+def _get_predictions_summary(periods: int = 24) -> Dict[str, Any]:
     """Get predictions summary for dashboard."""
     try:
-        return prediction_service.get_predictions_summary(periods=24)
+        return prediction_service.get_predictions_summary(periods=periods)
     except Exception:
         return {"available": False}
 

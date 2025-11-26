@@ -91,17 +91,16 @@ const Dashboard = {
         try {
             this.showLoading();
             
-            // Load all data in parallel
-            const [overview, predictions, sustainability, alerts] = await Promise.all([
+            // Load all data in parallel - pass period to overview which includes predictions
+            const [overview, sustainability, alerts] = await Promise.all([
                 API.dashboard.overview(this.currentPeriod),
-                API.dashboard.predictionsSummary(),
                 API.dashboard.sustainability(),
                 API.dashboard.alerts()
             ]);
             
-            // Update UI components
+            // Update UI components - predictions are included in overview
             this.updateStats(overview.overview?.statistics);
-            this.updatePredictions(predictions);
+            this.updatePredictions(overview.overview?.predictions);
             this.updateSustainability(sustainability);
             this.updateAlerts(alerts);
             this.updateCharts(overview);
