@@ -159,6 +159,11 @@ def register_frontend_routes(app):
         """Water-specific page."""
         return render_template("water.html")
 
+    @app.route("/help")
+    def help():
+        """Help and documentation page."""
+        return render_template("help.html")
+
     @app.route("/health")
     def health_check():
         """Health check endpoint for Docker/Kubernetes."""

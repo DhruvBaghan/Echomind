@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+
+{% block title %}Help{% endblock %}
+
+{% block page_title %}Help & Documentation{% endblock %}
+{% block page_subtitle %}Complete guide on how to use EchoMind{% endblock %}
+
+{% block content %}
+<style>
+    .help-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .help-card {
+        padding: var(--spacing-lg);
+        background: var(--surface-color);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .help-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .help-card h3 {
+        margin-top: 0;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+
+    .help-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .help-card.electricity .help-icon {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--electricity-color);
+    }
+
+    .help-card.water .help-icon {
+        background: rgba(6, 182, 212, 0.1);
+        color: var(--water-color);
+    }
+
+    .help-card.dashboard .help-icon {
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--primary-color);
+    }
+
+    .help-content {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .help-steps {
+        margin: var(--spacing-lg) 0;
+        padding-left: var(--spacing-lg);
+    }
+
+    .help-steps li {
+        margin-bottom: var(--spacing-md);
+        padding-left: var(--spacing-md);
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--spacing-md);
+        margin: var(--spacing-lg) 0;
+    }
+
+    .feature-item {
+        padding: var(--spacing-md);
+        background: var(--background-color);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+
+    .feature-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .feature-text h4 {
+        margin: 0 0 var(--spacing-xs);
+        font-size: var(--text-sm);
+        font-weight: 600;
+    }
+
+    .feature-text p {
+        margin: 0;
+        font-size: var(--text-xs);
+        color: var(--text-secondary);
+    }
+
+    .faq-item {
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-lg);
+        background: var(--surface-color);
+        border-radius: var(--radius-lg);
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .faq-item h4 {
+        margin: 0 0 var(--spacing-sm);
+        color: var(--text-primary);
+    }
+
+    .faq-item p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: var(--text-sm);
+        line-height: 1.6;
+    }
+
+    .info-banner {
+        padding: var(--spacing-lg);
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.1));
+        border-radius: var(--radius-lg);
+        border-left: 4px solid var(--primary-color);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .info-banner h2 {
+        margin-top: 0;
+        color: var(--primary-color);
+    }
+</style>
+
+<!-- Overview -->
+<div class="info-banner">
+    <h2><i class="fas fa-lightbulb"></i> Welcome to EchoMind</h2>
+    <p>EchoMind is an AI-powered resource consumption predictor that helps you understand and forecast your electricity and water usage. Use our intelligent forecasts to save money, reduce waste, and make smarter decisions about your energy and water consumption.</p>
+</div>
+
+<!-- Main Features -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Key Features</h3>
+    </div>
+    <div class="feature-grid">
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="feature-text">
+                <h4>AI Predictions</h4>
+                <p>Get accurate forecasts for your electricity and water consumption</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Cost Estimates</h4>
+                <p>Know exactly how much your predicted usage will cost</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Sustainability</h4>
+                <p>Track your carbon footprint and environmental impact</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Smart Tips</h4>
+                <p>Get personalized recommendations to save money and resources</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Easy to Use</h4>
+                <p>Simple interface for tracking your consumption data</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Export Data</h4>
+                <p>Download your predictions as CSV or PDF reports</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section Grid -->
+<div class="help-section">
+    <!-- Dashboard -->
+    <div class="help-card dashboard">
+        <h3>
+            <div class="help-icon"><i class="fas fa-tachometer-alt"></i></div>
+            Dashboard
+        </h3>
+        <div class="help-content">
+            <p>Your command center for resource management. View:</p>
+            <ul class="help-steps">
+                <li><strong>Current Usage:</strong> Real-time electricity and water consumption</li>
+                <li><strong>Predictions:</strong> 24-hour, weekly, or monthly forecasts with costs</li>
+                <li><strong>Trends:</strong> Compare your usage patterns over time</li>
+                <li><strong>Quick Stats:</strong> Sustainability score and improvement recommendations</li>
+            </ul>
+            <p><strong>Tip:</strong> Switch between Today, Week, and Month views to see how predictions scale over time.</p>
+        </div>
+    </div>
+
+    <!-- Enter Usage -->
+    <div class="help-card electricity">
+        <h3>
+            <div class="help-icon"><i class="fas fa-edit"></i></div>
+            Enter Usage
+        </h3>
+        <div class="help-content">
+            <p>Track your consumption by adding data points:</p>
+            <ul class="help-steps">
+                <li>Click "Enter Usage" from the sidebar</li>
+                <li>Choose Electricity or Water</li>
+                <li>Enter date/time and consumption value</li>
+                <li>Add as many entries as you'd like</li>
+                <li>Click "Submit" to generate predictions</li>
+            </ul>
+            <p><strong>Quick Add:</strong> Use sample data presets for instant demo data.</p>
+        </div>
+    </div>
+
+    <!-- Predictions -->
+    <div class="help-card water">
+        <h3>
+            <div class="help-icon"><i class="fas fa-chart-line"></i></div>
+            Predictions
+        </h3>
+        <div class="help-content">
+            <p>View detailed forecast data:</p>
+            <ul class="help-steps">
+                <li>See predicted values with confidence intervals</li>
+                <li>View cost projections (hourly, daily, weekly, monthly)</li>
+                <li>Get smart recommendations to reduce usage</li>
+                <li>Export predictions as CSV or PDF</li>
+                <li>Switch between electricity and water resources</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Electricity Tab -->
+    <div class="help-card electricity">
+        <h3>
+            <div class="help-icon"><i class="fas fa-bolt"></i></div>
+            Electricity Management
+        </h3>
+        <div class="help-content">
+            <p>Detailed electricity tracking:</p>
+            <ul class="help-steps">
+                <li>View hourly, daily, or weekly usage charts</li>
+                <li>See peak hour analysis and rates</li>
+                <li>Estimated appliance breakdown</li>
+                <li>Energy-saving tips tailored to your usage</li>
+                <li>Cost calculator for custom scenarios</li>
+            </ul>
+            <p><strong>Rate Info:</strong> Peak rates apply 5PM-10PM (1.5x), Off-peak 12AM-7AM (0.7x).</p>
+        </div>
+    </div>
+
+    <!-- Water Tab -->
+    <div class="help-card water">
+        <h3>
+            <div class="help-icon"><i class="fas fa-tint"></i></div>
+            Water Management
+        </h3>
+        <div class="help-content">
+            <p>Complete water usage monitoring:</p>
+            <ul class="help-steps">
+                <li>Track daily, weekly, monthly consumption</li>
+                <li>See usage by time period (morning, evening, night)</li>
+                <li>Estimated activity breakdown (toilet, shower, laundry, etc.)</li>
+                <li>Check benchmarks for your household</li>
+                <li>Water-saving recommendations</li>
+                <li>Leak detection alert system</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- How Predictions Work -->
+    <div class="help-card dashboard">
+        <h3>
+            <div class="help-icon"><i class="fas fa-brain"></i></div>
+            How Predictions Work
+        </h3>
+        <div class="help-content">
+            <p>EchoMind uses advanced algorithms:</p>
+            <ul class="help-steps">
+                <li><strong>Pattern Recognition:</strong> Analyzes your historical usage patterns</li>
+                <li><strong>Time-based Seasonality:</strong> Accounts for time of day, day of week</li>
+                <li><strong>Trend Analysis:</strong> Identifies increasing or decreasing patterns</li>
+                <li><strong>Confidence Intervals:</strong> Shows range of possible outcomes</li>
+                <li><strong>Cost Calculation:</strong> Estimates bills based on your rates</li>
+            </ul>
+            <p><strong>Accuracy:</strong> More historical data = better predictions. Start with at least 7 days of data.</p>
+        </div>
+    </div>
+</div>
+
+<!-- FAQs -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Frequently Asked Questions</h3>
+    </div>
+
+    <div class="faq-item">
+        <h4>How much data do I need to get good predictions?</h4>
+        <p>Ideally, provide at least 7-14 days of hourly data for accurate predictions. The more data you provide, the better EchoMind can understand your usage patterns. Even a few data points will generate reasonable forecasts based on typical household patterns.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>Are the predictions 100% accurate?</h4>
+        <p>No prediction system is 100% accurate. EchoMind provides the best possible forecast based on available data, but unexpected events (guests, appliance failures, weather changes) can affect actual consumption. Use predictions as a guide, not a guarantee.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>Can I change the electricity and water rates?</h4>
+        <p>EchoMind uses standard rates: $0.12/kWh for electricity and $0.002/liter for water. These are configurable settings that can be adjusted based on your utility company's rates for more accurate cost estimates.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>What does the "confidence interval" mean?</h4>
+        <p>The confidence interval shows a range of possible consumption values. For example, if a prediction is 50L with a 30-70L range, your actual consumption will likely fall somewhere between 30-70L. Narrower ranges indicate more confident predictions.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>How are sustainability scores calculated?</h4>
+        <p>Your sustainability score (0-100) is based on how your consumption compares to household benchmarks. Score breakdowns: 90+ (Excellent), 70-90 (Good), 50-70 (Average), Below 50 (High - improvement needed).</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>Can I export my data?</h4>
+        <p>Yes! From the Predictions page, click "Export CSV" to download your prediction data as a spreadsheet, or "Export PDF" to print a formatted report.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>What is leak detection?</h4>
+        <p>The leak detection feature analyzes water usage patterns to identify unusual consumption (like high usage at night). While not 100% reliable, it can alert you to potential plumbing issues worth investigating.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>How do I save money using EchoMind?</h4>
+        <p>EchoMind helps you save by: (1) identifying peak usage times, (2) suggesting energy-efficient behaviors, (3) showing projected costs for different scenarios, and (4) comparing your usage to benchmarks to spot inefficiencies.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>Is my data private and secure?</h4>
+        <p>EchoMind operates in demo mode and doesn't store data on external servers. All your consumption data stays within your browser's local storage. For production deployment, implement proper authentication and data encryption.</p>
+    </div>
+
+    <div class="faq-item">
+        <h4>Can I use EchoMind for multiple properties?</h4>
+        <p>Currently, EchoMind supports a single household profile. For multiple properties, you would need separate accounts. Future versions may support multiple property tracking.</p>
+    </div>
+</div>
+
+<!-- Getting Started -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Getting Started in 5 Minutes</h3>
+    </div>
+    <div style="padding: var(--spacing-lg);">
+        <ol style="line-height: 2; font-size: var(--text-sm);">
+            <li><strong>View Dashboard:</strong> Check out your current consumption and demo predictions</li>
+            <li><strong>Add Usage Data:</strong> Go to "Enter Usage" and add some consumption data points</li>
+            <li><strong>Generate Predictions:</strong> Submit your data and see AI-powered forecasts</li>
+            <li><strong>Explore Resources:</strong> Check the Electricity and Water tabs for detailed analytics</li>
+            <li><strong>Review Tips:</strong> Read the personalized recommendations to start saving</li>
+        </ol>
+    </div>
+</div>
+
+<!-- Tips Section -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Money-Saving Tips</h3>
+    </div>
+    <div class="feature-grid">
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Electricity Savings</h4>
+                <p>Use LED bulbs, unplug devices, shift heavy loads to off-peak hours, use power strips</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-shower"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Water Savings</h4>
+                <p>Take shorter showers, fix leaks immediately, install low-flow fixtures, run full loads</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <div class="feature-text">
+                <h4>Usage Monitoring</h4>
+                <p>Track daily, identify peaks, understand your patterns, set reduction goals</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

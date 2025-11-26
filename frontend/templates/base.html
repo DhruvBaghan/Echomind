@@ -73,16 +73,10 @@
                         </a>
                     </li>
                     
-                    <li class="nav-section-title">Settings</li>
+                    <li class="nav-section-title">Support</li>
                     
                     <li class="nav-item">
-                        <a href="#" class="nav-link" id="settings-link">
-                            <i class="fas fa-cog"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" id="help-link">
+                        <a href="{{ url_for('help') }}" class="nav-link {% if request.endpoint == 'help' %}active{% endif %}">
                             <i class="fas fa-question-circle"></i>
                             <span>Help</span>
                         </a>
@@ -149,45 +143,6 @@
         </main>
     </div>
     
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal hidden">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Settings</h2>
-                <button class="modal-close" onclick="closeModal('settings-modal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Electricity Rate ($/kWh)</label>
-                    <input type="number" class="form-input" id="electricity-rate" value="0.12" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Water Rate ($/Liter)</label>
-                    <input type="number" class="form-input" id="water-rate" value="0.002" step="0.001">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Household Size</label>
-                    <input type="number" class="form-input" id="household-size" value="4" min="1" max="20">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Default Prediction Periods</label>
-                    <select class="form-select" id="default-periods">
-                        <option value="24">24 hours</option>
-                        <option value="48">48 hours</option>
-                        <option value="72">72 hours</option>
-                        <option value="168">1 week</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('settings-modal')">Cancel</button>
-                <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
-            </div>
-        </div>
-    </div>
     
     <!-- Core JavaScript -->
     <script src="{{ url_for('static', filename='js/api.js') }}"></script>
@@ -198,65 +153,6 @@
         // Mobile menu toggle
         document.getElementById('menu-toggle')?.addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('open');
-        });
-        
-        // Settings modal
-        document.getElementById('settings-link')?.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('settings-modal').classList.remove('hidden');
-        });
-        
-        // Close modal functions
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-        
-        // Click outside to close
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', function() {
-                this.closest('.modal').classList.add('hidden');
-            });
-        });
-        
-        // Save settings
-        function saveSettings() {
-            const settings = {
-                electricity_rate: parseFloat(document.getElementById('electricity-rate').value),
-                water_rate: parseFloat(document.getElementById('water-rate').value),
-                household_size: parseInt(document.getElementById('household-size').value),
-                prediction_periods: parseInt(document.getElementById('default-periods').value)
-            };
-            
-            localStorage.setItem('echomind_settings', JSON.stringify(settings));
-            closeModal('settings-modal');
-            
-            // Show success message
-            const container = document.getElementById('message-container');
-            if (container) {
-                container.innerHTML = `
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Settings saved successfully!</span>
-                    </div>`;
-                container.classList.remove('hidden');
-                setTimeout(() => container.classList.add('hidden'), 3000);
-            }
-        }
-        
-        // Load settings on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const saved = localStorage.getItem('echomind_settings');
-            if (saved) {
-                try {
-                    const settings = JSON.parse(saved);
-                    if (settings.electricity_rate) document.getElementById('electricity-rate').value = settings.electricity_rate;
-                    if (settings.water_rate) document.getElementById('water-rate').value = settings.water_rate;
-                    if (settings.household_size) document.getElementById('household-size').value = settings.household_size;
-                    if (settings.prediction_periods) document.getElementById('default-periods').value = settings.prediction_periods;
-                } catch (e) {
-                    console.error('Error loading settings:', e);
-                }
-            }
         });
     </script>
 </body>
