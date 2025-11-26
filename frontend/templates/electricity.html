@@ -386,8 +386,21 @@
     // Load electricity data
     async function loadElectricityData() {
         try {
-            const stats = await API.dashboard.stats('month', 'electricity');
-            // Update UI with stats
+            const result = await API.dashboard.overview('today');
+            const overview = result.overview || {};
+            const stats = overview.statistics || {};
+            const elecStats = stats.electricity || {};
+            const predictions = overview.predictions || {};
+            const elecPred = predictions.electricity || {};
+            
+            // Update stat cards
+            if (elecStats.consumption !== undefined) {
+                document.getElementById('today-usage').textContent = `${elecStats.consumption?.toFixed(1) || 0} kWh`;
+            }
+            document.getElementById('week-usage').textContent = `${(elecStats.consumption * 7)?.toFixed(1) || 0} kWh`;
+            document.getElementById('month-cost').textContent = `$${(elecStats.consumption * 30 * 0.12)?.toFixed(2) || 0}`;
+            document.getElementById('carbon-footprint').textContent = `${(elecStats.consumption * 0.5)?.toFixed(2) || 0} kg`;
+            
             console.log('Electricity stats:', stats);
         } catch (error) {
             console.error('Error loading electricity data:', error);
@@ -397,22 +410,30 @@
     // Load tips
     async function loadElectricityTips() {
         try {
-            const result = await API.electricity.recommendations();
+            const result = await API.dashboard.overview('today');
+            const overview = result.overview || {};
+            const tips = overview.tips || [];
             const container = document.getElementById('electricity-tips');
             
-            if (result.success && result.recommendations) {
-                container.innerHTML = result.recommendations.slice(0, 6).map(tip => `
+            const electricityTips = tips.filter(t => t.category === 'electricity').slice(0, 3);
+            
+            if (electricityTips.length > 0) {
+                container.innerHTML = electricityTips.map(tip => `
                     <div class="tip-card">
                         <div class="tip-icon electricity">
                             <i class="fas fa-lightbulb"></i>
                         </div>
                         <div class="tip-content">
-                            <h4>${tip.title}</h4>
-                            <p>${tip.description}</p>
-                            <span class="tip-savings">${tip.potential_savings}</span>
+                            <h4>${tip.tip}</h4>
+                            <span class="tip-savings">${tip.impact}</span>
                         </div>
                     </div>
                 `).join('');
+            } else {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <p>No tips available yet. Start tracking your electricity usage to get personalized recommendations.</p>
+                    </div>`;
             }
         } catch (error) {
             console.error('Error loading tips:', error);
@@ -497,13 +518,32 @@
     }
     
     // Refresh appliances
-    function refreshAppliances() {
-        // Simulate refresh
-        const items = document.querySelectorAll('.appliance-usage');
-        items.forEach(item => {
-            const value = (Math.random() * 50 + 10).toFixed(1);
-            item.textContent = `${value} kWh`;
-        });
+    async function refreshAppliances() {
+        try {
+            const result = await API.dashboard.overview('today');
+            const overview = result.overview || {};
+            const stats = overview.statistics || {};
+            const elecStats = stats.electricity || {};
+            
+            const items = document.querySelectorAll('.appliance-usage');
+            const totalDaily = elecStats.consumption * 24 || 36;
+            const appliances = [
+                totalDaily * 0.40,
+                totalDaily * 0.15,
+                totalDaily * 0.13,
+                totalDaily * 0.10,
+                totalDaily * 0.08,
+                totalDaily * 0.06
+            ];
+            
+            items.forEach((item, i) => {
+                if (appliances[i]) {
+                    item.textContent = `${appliances[i].toFixed(1)} kWh`;
+                }
+            });
+        } catch (error) {
+            console.error('Error refreshing appliances:', error);
+        }
     }
     
     // Get predictions

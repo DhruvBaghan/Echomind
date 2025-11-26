@@ -493,7 +493,39 @@
     // Load water data
     async function loadWaterData() {
         try {
-            const stats = await API.dashboard.stats('month', 'water');
+            const result = await API.dashboard.overview('today');
+            const overview = result.overview || {};
+            const stats = overview.statistics || {};
+            const waterStats = stats.water || {};
+            const predictions = overview.predictions || {};
+            const waterPred = predictions.water || {};
+            
+            // Update stat cards
+            if (waterStats.consumption !== undefined) {
+                document.getElementById('today-usage').textContent = `${waterStats.consumption?.toFixed(0) || 0} L`;
+            }
+            document.getElementById('week-usage').textContent = `${(waterStats.consumption * 7)?.toFixed(0) || 0} L`;
+            document.getElementById('month-cost').textContent = `$${(waterStats.consumption * 30 * 0.002)?.toFixed(2) || 0}`;
+            document.getElementById('your-daily-average').textContent = `${waterStats.consumption?.toFixed(0) || 0} L`;
+            
+            // Update appliance breakdown
+            const activities = document.querySelectorAll('.activity-usage');
+            const totalDaily = waterStats.consumption || 500;
+            const appliances = [
+                {percent: 0.30, value: totalDaily * 0.30},
+                {percent: 0.25, value: totalDaily * 0.25},
+                {percent: 0.15, value: totalDaily * 0.15},
+                {percent: 0.15, value: totalDaily * 0.15},
+                {percent: 0.05, value: totalDaily * 0.05},
+                {percent: 0.10, value: totalDaily * 0.10}
+            ];
+            
+            activities.forEach((el, i) => {
+                if (appliances[i]) {
+                    el.textContent = `${appliances[i].value.toFixed(0)} L`;
+                }
+            });
+            
             console.log('Water stats:', stats);
         } catch (error) {
             console.error('Error loading water data:', error);
@@ -503,22 +535,30 @@
     // Load tips
     async function loadWaterTips() {
         try {
-            const result = await API.water.recommendations();
+            const result = await API.dashboard.overview('today');
+            const overview = result.overview || {};
+            const tips = overview.tips || [];
             const container = document.getElementById('water-tips');
             
-            if (result.success && result.recommendations) {
-                container.innerHTML = result.recommendations.slice(0, 6).map(tip => `
+            const waterTips = tips.filter(t => t.category === 'water').slice(0, 3);
+            
+            if (waterTips.length > 0) {
+                container.innerHTML = waterTips.map(tip => `
                     <div class="tip-card">
                         <div class="tip-icon water" style="width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                             <i class="fas fa-tint"></i>
                         </div>
                         <div class="tip-content">
-                            <h4>${tip.title}</h4>
-                            <p>${tip.description}</p>
-                            <span class="tip-savings">${tip.potential_savings}</span>
+                            <h4>${tip.tip}</h4>
+                            <span class="tip-savings">${tip.impact}</span>
                         </div>
                     </div>
                 `).join('');
+            } else {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <p>No tips available yet. Start tracking your water usage to get personalized recommendations.</p>
+                    </div>`;
             }
         } catch (error) {
             console.error('Error loading tips:', error);
