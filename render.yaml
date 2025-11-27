@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: echomind
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:5000 --workers 1 wsgi:app
+    healthCheckPath: /health
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///echomind.db
+      - key: HOST
+        value: "0.0.0.0"
+      - key: PORT
+        value: "5000"
+      - key: ELECTRICITY_COST_PER_KWH
+        value: "0.12"
+      - key: WATER_COST_PER_LITER
+        value: "0.002"
