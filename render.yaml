@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:5000 --workers 1 wsgi:app
+    startCommand: exec gunicorn --bind 0.0.0.0:5000 --workers 1 wsgi:app
     healthCheckPath: /health
     envVars:
       - key: FLASK_ENV
