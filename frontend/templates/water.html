@@ -643,6 +643,102 @@
         }
     });
     
+    // Chart view switcher
+    let currentView = 'hourly';
+    let chartInstance = null;
+    
+    document.querySelectorAll('[data-view]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const view = e.target.dataset.view;
+            currentView = view;
+            
+            // Update active button
+            document.querySelectorAll('[data-view]').forEach(b => {
+                b.classList.toggle('active', b.dataset.view === view);
+            });
+            
+            // Regenerate chart with new view
+            updateChartView(view);
+        });
+    });
+    
+    function updateChartView(view) {
+        const ctx = document.getElementById('water-chart');
+        if (!ctx) return;
+        
+        // Destroy existing chart
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+        
+        const now = new Date();
+        let labels = [];
+        let data = [];
+        let periods = 24;
+        
+        if (view === 'hourly') {
+            // 24 hours
+            for (let i = 23; i >= 0; i--) {
+                const hour = new Date(now - i * 3600000);
+                labels.push(hour.getHours() + ':00');
+                const h = hour.getHours();
+                let base = 15;
+                if (h >= 6 && h <= 9) base = 45;
+                else if (h >= 18 && h <= 22) base = 40;
+                else if (h >= 0 && h <= 5) base = 5;
+                data.push(base + Math.random() * 10);
+            }
+        } else if (view === 'daily') {
+            // 7 days
+            for (let i = 6; i >= 0; i--) {
+                const day = new Date(now - i * 86400000);
+                labels.push(day.toLocaleDateString('en-US', {weekday: 'short'}));
+                data.push(300 + Math.random() * 100);
+            }
+            periods = 7;
+        } else if (view === 'weekly') {
+            // 12 weeks
+            for (let i = 11; i >= 0; i--) {
+                const week = new Date(now - i * 604800000);
+                labels.push('W' + Math.floor(week.getDate() / 7));
+                data.push(2200 + Math.random() * 400);
+            }
+            periods = 12;
+        }
+        
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Consumption (L)',
+                    data: data,
+                    backgroundColor: 'rgba(6, 182, 212, 0.7)',
+                    borderColor: '#06b6d4',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Liters'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
     // Check for leaks
     document.getElementById('check-leaks')?.addEventListener('click', async function() {
         try {

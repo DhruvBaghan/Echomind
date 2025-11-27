@@ -23,12 +23,7 @@ const Predictions = {
     init() {
         console.log('Initializing predictions page...');
         
-        // Clear prediction data on page load (start fresh)
-        sessionStorage.removeItem('predictionResult');
-        sessionStorage.removeItem('predictionResource');
-        this.predictionData = null;
-        
-        // Load prediction data from session
+        // Load prediction data from session FIRST
         this.loadPredictionData();
         
         // Setup event listeners
@@ -55,6 +50,11 @@ const Predictions = {
             try {
                 this.predictionData = JSON.parse(stored);
                 this.resourceType = resource || 'electricity';
+                // Clear after loading so it doesn't persist
+                setTimeout(() => {
+                    sessionStorage.removeItem('predictionResult');
+                    sessionStorage.removeItem('predictionResource');
+                }, 100);
             } catch (e) {
                 console.error('Error parsing prediction data:', e);
             }

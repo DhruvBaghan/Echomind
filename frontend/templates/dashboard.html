@@ -280,5 +280,29 @@
             setTimeout(() => container.classList.add('hidden'), 3000);
         }
     };
+    
+    // Chart filter functionality
+    document.querySelectorAll('[data-chart]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const chartType = e.target.dataset.chart;
+            
+            // Update active button
+            document.querySelectorAll('[data-chart]').forEach(b => {
+                b.classList.toggle('active', b.dataset.chart === chartType);
+                b.classList.toggle('btn-secondary', b.dataset.chart !== chartType);
+                b.classList.toggle('btn-primary', b.dataset.chart === chartType);
+            });
+            
+            // Update chart visibility
+            const chart = Dashboard.charts.consumption;
+            if (!chart) return;
+            
+            // Show/hide datasets
+            chart.data.datasets[0].hidden = chartType === 'water';
+            chart.data.datasets[1].hidden = chartType === 'electricity';
+            
+            chart.update();
+        });
+    });
 </script>
 {% endblock %}

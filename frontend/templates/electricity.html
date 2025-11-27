@@ -557,5 +557,101 @@
             console.error('Error getting predictions:', error);
         }
     });
+    
+    // Chart view switcher
+    let currentView = 'hourly';
+    let chartInstance = null;
+    
+    document.querySelectorAll('[data-view]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const view = e.target.dataset.view;
+            currentView = view;
+            
+            // Update active button
+            document.querySelectorAll('[data-view]').forEach(b => {
+                b.classList.toggle('active', b.dataset.view === view);
+            });
+            
+            // Regenerate chart with new view
+            updateChartView(view);
+        });
+    });
+    
+    function updateChartView(view) {
+        const ctx = document.getElementById('electricity-chart');
+        if (!ctx) return;
+        
+        // Destroy existing chart
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+        
+        const now = new Date();
+        let labels = [];
+        let data = [];
+        let periods = 24;
+        
+        if (view === 'hourly') {
+            // 24 hours
+            for (let i = 23; i >= 0; i--) {
+                const hour = new Date(now - i * 3600000);
+                labels.push(hour.getHours() + ':00');
+                const h = hour.getHours();
+                let base = 1.5;
+                if (h >= 6 && h <= 9) base = 2.5;
+                else if (h >= 17 && h <= 21) base = 3;
+                else if (h >= 0 && h <= 5) base = 0.8;
+                data.push(base + Math.random() * 0.5);
+            }
+        } else if (view === 'daily') {
+            // 7 days
+            for (let i = 6; i >= 0; i--) {
+                const day = new Date(now - i * 86400000);
+                labels.push(day.toLocaleDateString('en-US', {weekday: 'short'}));
+                data.push(20 + Math.random() * 10);
+            }
+            periods = 7;
+        } else if (view === 'weekly') {
+            // 12 weeks
+            for (let i = 11; i >= 0; i--) {
+                const week = new Date(now - i * 604800000);
+                labels.push('W' + Math.floor(week.getDate() / 7));
+                data.push(150 + Math.random() * 50);
+            }
+            periods = 12;
+        }
+        
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Consumption (kWh)',
+                    data: data,
+                    backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                    borderColor: '#f59e0b',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'kWh'
+                        }
+                    }
+                }
+            }
+        });
+    }
 </script>
 {% endblock %}
