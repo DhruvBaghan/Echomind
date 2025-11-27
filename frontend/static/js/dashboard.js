@@ -98,6 +98,17 @@ const Dashboard = {
                 API.dashboard.alerts()
             ]);
             
+            // Check if we have actual user data
+            const hasData = this.hasUserData(overview);
+            
+            if (!hasData) {
+                this.showEmptyState();
+                this.hideLoading();
+                return;
+            }
+            
+            this.showDashboard();
+            
             // Update UI components - predictions are included in overview
             this.updateStats(overview.overview?.statistics);
             this.updatePredictions(overview.overview?.predictions);
@@ -113,6 +124,45 @@ const Dashboard = {
             this.showError('Failed to load dashboard data');
             this.hideLoading();
         }
+    },
+    
+    /**
+     * Check if we have user data
+     */
+    hasUserData(overview) {
+        // If overview data exists and has real values (not just defaults), show dashboard
+        const stats = overview.overview?.statistics;
+        if (!stats) return false;
+        
+        // Check if electricity or water usage exists
+        const elecUsage = stats.electricity?.usage || 0;
+        const waterUsage = stats.water?.usage || 0;
+        
+        return elecUsage > 0 || waterUsage > 0;
+    },
+    
+    /**
+     * Show empty state
+     */
+    showEmptyState() {
+        document.getElementById('empty-state')?.style.removeProperty('display');
+        document.getElementById('stats-grid')?.style.setProperty('display', 'none', 'important');
+        document.getElementById('charts-row')?.style.setProperty('display', 'none', 'important');
+        document.getElementById('second-row')?.style.setProperty('display', 'none', 'important');
+        document.getElementById('tips-section')?.style.setProperty('display', 'none', 'important');
+        document.getElementById('quick-actions')?.style.setProperty('display', 'none', 'important');
+    },
+    
+    /**
+     * Show dashboard content
+     */
+    showDashboard() {
+        document.getElementById('empty-state')?.style.setProperty('display', 'none', 'important');
+        document.getElementById('stats-grid')?.style.removeProperty('display');
+        document.getElementById('charts-row')?.style.removeProperty('display');
+        document.getElementById('second-row')?.style.removeProperty('display');
+        document.getElementById('tips-section')?.style.removeProperty('display');
+        document.getElementById('quick-actions')?.style.removeProperty('display');
     },
     
     /**
