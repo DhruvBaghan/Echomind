@@ -17,8 +17,21 @@
 {% endblock %}
 
 {% block content %}
+<!-- Empty State -->
+<div id="empty-state" class="card" style="text-align: center; padding: 60px 40px;">
+    <div style="font-size: 48px; margin-bottom: 20px;">⚡</div>
+    <h2 style="font-size: 24px; margin-bottom: 10px; color: var(--text-primary);">No Data Yet</h2>
+    <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 16px;">
+        Enter your electricity usage data to analyze consumption patterns and get personalized recommendations.
+    </p>
+    <a href="{{ url_for('user_input') }}" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus"></i>
+        Enter Usage Data
+    </a>
+</div>
+
 <!-- Stats Overview -->
-<div class="stats-grid">
+<div class="stats-grid" id="stats-grid" style="display: none;">
     <div class="stat-card electricity">
         <div class="stat-icon electricity">
             <i class="fas fa-bolt"></i>
@@ -57,7 +70,7 @@
 </div>
 
 <!-- Charts Row -->
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg);">
+<div id="charts-row" style="display: none; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg);">
     <!-- Usage Chart -->
     <div class="card">
         <div class="card-header">
@@ -122,7 +135,7 @@
 </div>
 
 <!-- Appliance Breakdown -->
-<div class="card">
+<div class="card" id="appliance-section" style="display: none;">
     <div class="card-header">
         <h3 class="card-title">Estimated Appliance Usage</h3>
         <button class="btn btn-sm btn-secondary" onclick="refreshAppliances()">
@@ -653,5 +666,27 @@
             }
         });
     }
+    
+    // Load page with empty state check
+    document.addEventListener('DOMContentLoaded', () => {
+        const stats = {
+            today: document.getElementById('today-usage')?.textContent || '',
+            week: document.getElementById('week-usage')?.textContent || ''
+        };
+        
+        const hasData = !stats.today?.includes('--') || !stats.week?.includes('--');
+        
+        if (!hasData) {
+            document.getElementById('empty-state')?.style.removeProperty('display');
+            document.getElementById('stats-grid')?.style.setProperty('display', 'none', 'important');
+            document.getElementById('charts-row')?.style.setProperty('display', 'none', 'important');
+            document.getElementById('appliance-section')?.style.setProperty('display', 'none', 'important');
+        } else {
+            document.getElementById('empty-state')?.style.setProperty('display', 'none', 'important');
+            document.getElementById('stats-grid')?.style.removeProperty('display');
+            document.getElementById('charts-row')?.style.removeProperty('display');
+            document.getElementById('appliance-section')?.style.removeProperty('display');
+        }
+    });
 </script>
 {% endblock %}
