@@ -23,6 +23,11 @@ const Predictions = {
     init() {
         console.log('Initializing predictions page...');
         
+        // Clear prediction data on page load (start fresh)
+        sessionStorage.removeItem('predictionResult');
+        sessionStorage.removeItem('predictionResource');
+        this.predictionData = null;
+        
         // Load prediction data from session
         this.loadPredictionData();
         
