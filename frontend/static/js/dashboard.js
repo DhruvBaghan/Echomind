@@ -499,8 +499,73 @@ const Dashboard = {
                 </div>`;
             container.classList.remove('hidden');
         }
+    },
+    
+    /**
+     * Load demo data
+     */
+    loadDemoData() {
+        this.showLoading();
+        this.loadDashboard().then(() => {
+            this.showSuccess('Demo data loaded successfully!');
+        }).catch(error => {
+            this.showError('Failed to load demo data');
+        }).finally(() => {
+            this.hideLoading();
+        });
     }
 };
+
+/**
+ * Export dashboard data as CSV
+ */
+function exportData() {
+    try {
+        const now = new Date();
+        const timestamp = now.toISOString().split('T')[0];
+        
+        // Collect current dashboard values
+        const elecUsage = document.getElementById('electricity-consumption')?.textContent || 'N/A';
+        const waterUsage = document.getElementById('water-consumption')?.textContent || 'N/A';
+        const elecPred = document.getElementById('electricity-predicted')?.textContent || 'N/A';
+        const waterPred = document.getElementById('water-predicted')?.textContent || 'N/A';
+        const elecCost = document.getElementById('electricity-cost')?.textContent || 'N/A';
+        const waterCost = document.getElementById('water-cost')?.textContent || 'N/A';
+        const sustainability = document.getElementById('sustainability-score')?.textContent || 'N/A';
+        
+        // Create CSV content
+        const csvContent = [
+            ['EchoMind Dashboard Report', timestamp],
+            [],
+            ['Metric', 'Value'],
+            ['Electricity Usage', elecUsage],
+            ['Water Usage', waterUsage],
+            ['Electricity Prediction (24h)', elecPred],
+            ['Electricity Cost (24h)', elecCost],
+            ['Water Prediction (24h)', waterPred],
+            ['Water Cost (24h)', waterCost],
+            ['Sustainability Score', sustainability],
+            [],
+            ['Report Generated', new Date().toLocaleString()]
+        ].map(row => row.join(',')).join('\n');
+        
+        // Create blob and download
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `echomind-report-${timestamp}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        Dashboard.showSuccess('Report exported successfully!');
+    } catch (error) {
+        console.error('Export error:', error);
+        Dashboard.showError('Failed to export report');
+    }
+}
 
 
 // Initialize when DOM is ready
