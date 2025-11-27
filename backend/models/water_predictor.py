@@ -125,10 +125,10 @@ class WaterPredictor(BasePredictor):
             values = [p["predicted_value"] for p in predictions]
             max_val = max(values) if values else 1
             
-            # Scale factor: if max is > 100 liters/hour, scale it down
-            if max_val > 100:
-                scale_factor = 25 / (max_val / 50)  # Target average around 25 liters
-                scale_factor = max(0.01, min(scale_factor, 1))  # Keep between 0.01 and 1
+            # Always scale if values are unrealistically high
+            if max_val > 50:  # More aggressive threshold
+                # Target 25 liters as average, so scale proportionally
+                scale_factor = 25 / max_val  # Scale to approximately 15-40 liters range
                 
                 for pred in predictions:
                     pred["predicted_value"] = round(pred["predicted_value"] * scale_factor, 2)

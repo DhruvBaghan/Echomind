@@ -114,10 +114,10 @@ class ElectricityPredictor(BasePredictor):
             values = [p["predicted_value"] for p in predictions]
             max_val = max(values) if values else 1
             
-            # Scale factor: if max is > 10 kWh/hour, scale it down
-            if max_val > 10:
-                scale_factor = 1.5 / (max_val / 50)  # Target average around 1.5 kWh
-                scale_factor = max(0.01, min(scale_factor, 1))  # Keep between 0.01 and 1
+            # Always scale if values are unrealistically high
+            if max_val > 5:  # More aggressive threshold
+                # Target 1.0 kWh as average, so if max is 75, scale by 1/75
+                scale_factor = 1.0 / max_val  # Scale to approximately 0.5-2 kWh range
                 
                 for pred in predictions:
                     pred["predicted_value"] = round(pred["predicted_value"] * scale_factor, 2)
