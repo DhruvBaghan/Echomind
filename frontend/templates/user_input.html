@@ -295,81 +295,17 @@
         }
     };
     
-    // Load Demo Data function
+    // Load Demo Data function - same as predictions page
     async function loadDemoData() {
         try {
-            // Show loading
-            const btn = document.getElementById('load-demo') || document.getElementById('quick-load-demo');
-            if (btn) btn.disabled = true;
-            
-            // Get demo data from API
             const result = await API.predictions.demo('both', 24);
-            
-            // Clear existing data
-            if (UserInput) {
-                UserInput.formData.electricity = [];
-                UserInput.formData.water = [];
-            }
-            
-            // Add electricity data points from demo
-            if (result.electricity?.forecast) {
-                result.electricity.forecast.forEach((value, index) => {
-                    const datetime = new Date();
-                    datetime.setHours(datetime.getHours() - (23 - index));
-                    if (UserInput) {
-                        UserInput.formData.electricity.push({
-                            datetime: datetime.toISOString(),
-                            value: parseFloat(value).toFixed(2),
-                            notes: 'Demo data'
-                        });
-                    }
-                });
-            }
-            
-            // Add water data points from demo
-            if (result.water?.forecast) {
-                result.water.forecast.forEach((value, index) => {
-                    const datetime = new Date();
-                    datetime.setHours(datetime.getHours() - (23 - index));
-                    if (UserInput) {
-                        UserInput.formData.water.push({
-                            datetime: datetime.toISOString(),
-                            value: parseFloat(value).toFixed(2),
-                            notes: 'Demo data'
-                        });
-                    }
-                });
-            }
-            
-            // Render entries
-            if (UserInput) {
-                UserInput.renderEntries();
-            }
-            
-            // Show success message
-            const msg = document.createElement('div');
-            msg.className = 'alert alert-success';
-            msg.innerHTML = '<i class="fas fa-check-circle"></i> <span>Demo data loaded successfully! Now you can see data on Dashboard and resource pages.</span>';
-            const container = document.getElementById('message-container');
-            if (container) {
-                container.appendChild(msg);
-                setTimeout(() => msg.remove(), 3000);
-            }
-            
-            // Re-enable button
-            if (btn) btn.disabled = false;
+            // Store demo data in sessionStorage
+            sessionStorage.setItem('demoData', JSON.stringify(result));
+            // Redirect to dashboard to see the demo data
+            window.location.href = '/';
         } catch (error) {
             console.error('Error loading demo data:', error);
-            const msg = document.createElement('div');
-            msg.className = 'alert alert-error';
-            msg.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span>Failed to load demo data</span>';
-            const container = document.getElementById('message-container');
-            if (container) {
-                container.appendChild(msg);
-                setTimeout(() => msg.remove(), 3000);
-            }
-            const btn = document.getElementById('load-demo') || document.getElementById('quick-load-demo');
-            if (btn) btn.disabled = false;
+            alert('Failed to load demo data. Please try again.');
         }
     }
     

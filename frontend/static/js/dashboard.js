@@ -91,6 +91,21 @@ const Dashboard = {
         try {
             this.showLoading();
             
+            // Check for demo data in sessionStorage
+            const demoData = sessionStorage.getItem('demoData');
+            if (demoData) {
+                try {
+                    const demo = JSON.parse(demoData);
+                    sessionStorage.removeItem('demoData'); // Clear after loading
+                    this.showDashboard();
+                    this.displayDemoData(demo);
+                    this.hideLoading();
+                    return;
+                } catch (e) {
+                    console.error('Error parsing demo data:', e);
+                }
+            }
+            
             // Load all data in parallel - pass period to overview which includes predictions
             const [overview, sustainability, alerts] = await Promise.all([
                 API.dashboard.overview(this.currentPeriod),
@@ -127,6 +142,30 @@ const Dashboard = {
     },
     
     /**
+     * Display demo data
+     */
+    displayDemoData(demo) {
+        // Display demo predictions as stats
+        const elecForecast = demo.electricity?.forecast || [];
+        const waterForecast = demo.water?.forecast || [];
+        
+        const elecTotal = elecForecast.reduce((a, b) => a + parseFloat(b), 0).toFixed(2);
+        const waterTotal = waterForecast.reduce((a, b) => a + parseFloat(b), 0).toFixed(2);
+        
+        // Update stats cards
+        document.getElementById('electricity-consumption').textContent = (elecForecast[0] || 0).toFixed(2) + ' kWh';
+        document.getElementById('water-consumption').textContent = (waterForecast[0] || 0).toFixed(2) + ' L';
+        document.getElementById('electricity-predicted').textContent = elecTotal + ' kWh';
+        document.getElementById('water-predicted').textContent = waterTotal + ' L';
+        document.getElementById('electricity-cost').textContent = (elecTotal * 0.12).toFixed(2);
+        document.getElementById('water-cost').textContent = (waterTotal * 0.002).toFixed(2);
+        
+        // Update sustainability score
+        document.getElementById('sustainability-score').textContent = '78';
+        document.getElementById('sustainability-grade').textContent = 'B+';
+    },
+    
+    /**
      * Check if we have user data
      */
     hasUserData(overview) {
@@ -139,6 +178,22 @@ const Dashboard = {
         const waterUsage = stats.water?.usage || 0;
         
         return elecUsage > 0 || waterUsage > 0;
+    },
+    
+    /**
+     * Show success message
+     */
+    showSuccess(message) {
+        const container = document.getElementById('message-container');
+        if (container) {
+            container.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                </div>`;
+            container.classList.remove('hidden');
+            setTimeout(() => container.classList.add('hidden'), 3000);
+        }
     },
     
     /**
