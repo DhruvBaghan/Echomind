@@ -21,21 +21,8 @@
 {% endblock %}
 
 {% block content %}
-<!-- Empty State -->
-<div id="empty-state" class="card" style="text-align: center; padding: 60px 40px;">
-    <div style="font-size: 48px; margin-bottom: 20px;">💧</div>
-    <h2 style="font-size: 24px; margin-bottom: 10px; color: var(--text-primary);">No Data Yet</h2>
-    <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 16px;">
-        Enter your water usage data to monitor consumption patterns and detect potential leaks.
-    </p>
-    <a href="{{ url_for('user_input') }}" class="btn btn-primary btn-lg">
-        <i class="fas fa-plus"></i>
-        Enter Usage Data
-    </a>
-</div>
-
 <!-- Stats Overview -->
-<div class="stats-grid" id="stats-grid" style="display: none;">
+<div class="stats-grid">
     <div class="stat-card water">
         <div class="stat-icon water">
             <i class="fas fa-tint"></i>
@@ -85,7 +72,7 @@
 </div>
 
 <!-- Charts Row -->
-<div id="charts-row" style="display: none; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg);">
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg);">
     <!-- Usage Chart -->
     <div class="card">
         <div class="card-header">
@@ -155,7 +142,7 @@
 </div>
 
 <!-- Activity Breakdown -->
-<div class="card" id="activity-section" style="display: none;">
+<div class="card">
     <div class="card-header">
         <h3 class="card-title">Estimated Usage by Activity</h3>
         <button class="btn btn-sm btn-secondary" onclick="refreshActivities()">
@@ -751,50 +738,6 @@
             }
         });
     }
-    
-    // Load page with empty state check
-    document.addEventListener('DOMContentLoaded', () => {
-        // Check for demo data
-        const demoData = sessionStorage.getItem('demoData');
-        if (demoData) {
-            try {
-                const demo = JSON.parse(demoData);
-                sessionStorage.removeItem('demoData');
-                const waterForecast = demo.water?.forecast || [];
-                document.getElementById('today-usage').textContent = (waterForecast[0] || 0).toFixed(0) + ' L';
-                document.getElementById('week-usage').textContent = (waterForecast.reduce((a, b) => a + parseFloat(b), 0) / 7).toFixed(0) + ' L';
-                document.getElementById('month-cost').textContent = '$' + (waterForecast.reduce((a, b) => a + parseFloat(b), 0) * 0.002 * 30 / 24).toFixed(2);
-                document.getElementById('leak-status').textContent = 'No Leaks';
-                document.getElementById('leak-status').style.color = 'var(--success-color)';
-                document.getElementById('empty-state')?.style.setProperty('display', 'none', 'important');
-                document.getElementById('stats-grid')?.style.removeProperty('display');
-                document.getElementById('charts-row')?.style.removeProperty('display');
-                document.getElementById('activity-section')?.style.removeProperty('display');
-                return;
-            } catch (e) {
-                console.error('Error parsing demo data:', e);
-            }
-        }
-        
-        const stats = {
-            today: document.getElementById('today-usage')?.textContent || '',
-            week: document.getElementById('week-usage')?.textContent || ''
-        };
-        
-        const hasData = !stats.today?.includes('--') || !stats.week?.includes('--');
-        
-        if (!hasData) {
-            document.getElementById('empty-state')?.style.removeProperty('display');
-            document.getElementById('stats-grid')?.style.setProperty('display', 'none', 'important');
-            document.getElementById('charts-row')?.style.setProperty('display', 'none', 'important');
-            document.getElementById('activity-section')?.style.setProperty('display', 'none', 'important');
-        } else {
-            document.getElementById('empty-state')?.style.setProperty('display', 'none', 'important');
-            document.getElementById('stats-grid')?.style.removeProperty('display');
-            document.getElementById('charts-row')?.style.removeProperty('display');
-            document.getElementById('activity-section')?.style.removeProperty('display');
-        }
-    });
     
     // Check for leaks
     document.getElementById('check-leaks')?.addEventListener('click', async function() {

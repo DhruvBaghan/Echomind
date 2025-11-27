@@ -6,10 +6,6 @@
 {% block page_subtitle %}Input your electricity and water consumption data for predictions{% endblock %}
 
 {% block page_actions %}
-<button class="btn btn-secondary" id="load-demo">
-    <i class="fas fa-database"></i>
-    Load Demo Data
-</button>
 <button class="btn btn-secondary" id="clear-data">
     <i class="fas fa-trash"></i>
     Clear All
@@ -94,10 +90,6 @@
                 <button class="btn btn-sm btn-secondary" data-preset="sample-month">
                     <i class="fas fa-calendar-alt"></i>
                     1 Month Sample
-                </button>
-                <button class="btn btn-sm btn-primary" id="quick-load-demo" style="margin-left: auto;">
-                    <i class="fas fa-database"></i>
-                    Load Demo Data
                 </button>
             </div>
         </div>
@@ -294,23 +286,5 @@
             countBadge.textContent = `${count} entries`;
         }
     };
-    
-    // Load Demo Data function - same as predictions page
-    async function loadDemoData() {
-        try {
-            const result = await API.predictions.demo('both', 24);
-            // Store demo data in sessionStorage
-            sessionStorage.setItem('demoData', JSON.stringify(result));
-            // Redirect to dashboard to see the demo data
-            window.location.href = '/';
-        } catch (error) {
-            console.error('Error loading demo data:', error);
-            alert('Failed to load demo data. Please try again.');
-        }
-    }
-    
-    // Button event listeners
-    document.getElementById('load-demo')?.addEventListener('click', loadDemoData);
-    document.getElementById('quick-load-demo')?.addEventListener('click', loadDemoData);
 </script>
 {% endblock %}
